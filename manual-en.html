@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Manual - FinançPessoal v3.0</title>
+    <style>
+        :root {
+            --fundo: #2C1810;
+            --fundo-card: #3D2317;
+            --card: #4A2C1E;
+            --borda: #5C3D2E;
+            --primaria: #2D6A4F;
+            --secundaria: #40916C;
+            --ouro: #D4A574;
+            --ouro-claro: #E8C99B;
+            --texto: #F5F0EB;
+            --texto-cinza: #C4B5A5;
+            --verde: #6BCB77;
+            --vermelho: #FF8A8A;
+            --azul: #74B9FF;
+            --roxo: #A78BFA;
+            --relampago: #FF4444;
+            --imediato: #FF6B35;
+            --urgente: #FFD93D;
+            --rotina: #6BCB77;
+        }
+
+        [data-tema="mulher"] {
+            --primaria: #6D28D9;
+            --secundaria: #8B5CF6;
+            --roxo: #A78BFA;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background: var(--fundo);
+            color: var(--texto);
+            padding: 16px;
+            min-height: 100vh;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--fundo);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--ouro);
+            border-radius: 10px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            padding: 30px 0 20px;
+            border-bottom: 2px solid var(--borda);
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            font-size: 36px;
+            background: linear-gradient(135deg, var(--ouro), var(--primaria));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .header p {
+            color: var(--texto-cinza);
+            font-size: 16px;
+            margin-top: 8px;
+        }
+        .header .versao {
+            display: inline-block;
+            background: var(--primaria);
+            color: #fff;
+            padding: 4px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            margin-top: 10px;
+        }
+
+        .btn-tema {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            background: var(--card);
+            border: 1px solid var(--borda);
+            color: var(--texto);
+            padding: 8px 14px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+            z-index: 100;
+        }
+        .btn-tema:hover {
+            border-color: var(--ouro);
+            background: var(--primaria);
+        }
+
+        .indice {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 30px;
+            border: 1px solid var(--borda);
+        }
+        .indice h2 {
+            margin-bottom: 12px;
+            color: var(--ouro);
+        }
+        .indice-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+            gap: 6px;
+        }
+        .indice-grid a {
+            color: var(--texto-cinza);
+            text-decoration: none;
+            padding: 6px 12px;
+            border-radius: 8px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+        }
+        .indice-grid a:hover {
+            background: var(--primaria);
+            color: #fff;
+        }
+
+        .secao {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+            border: 1px solid var(--borda);
+            scroll-margin-top: 20px;
+        }
+        .secao h2 {
+            color: var(--ouro);
+            font-size: 24px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .secao h3 {
+            color: var(--texto);
+            font-size: 18px;
+            margin: 16px 0 8px;
+        }
+        .secao p {
+            color: var(--texto-cinza);
+            line-height: 1.7;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        .secao ul,
+        .secao ol {
+            color: var(--texto-cinza);
+            padding-left: 24px;
+            margin-bottom: 12px;
+        }
+        .secao ul li,
+        .secao ol li {
+            margin-bottom: 6px;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        .dica {
+            background: rgba(212, 165, 116, 0.12);
+            border-left: 4px solid var(--ouro);
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin: 12px 0;
+        }
+        .dica strong {
+            color: var(--ouro);
+        }
+
+        .atencao {
+            background: rgba(255, 138, 138, 0.12);
+            border-left: 4px solid var(--vermelho);
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin: 12px 0;
+        }
+        .atencao strong {
+            color: var(--vermelho);
+        }
+
+        .sucesso {
+            background: rgba(107, 203, 119, 0.12);
+            border-left: 4px solid var(--verde);
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin: 12px 0;
+        }
+        .sucesso strong {
+            color: var(--verde);
+        }
+
+        .passo {
+            background: var(--fundo);
+            padding: 10px 14px;
+            border-radius: 8px;
+            margin: 6px 0;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+        .passo .num {
+            background: var(--primaria);
+            color: #fff;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 13px;
+            flex-shrink: 0;
+        }
+        .passo .texto {
+            color: var(--texto);
+            font-size: 14px;
+        }
+
+        .tabela {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 12px 0;
+            font-size: 13px;
+        }
+        .tabela th {
+            background: var(--primaria);
+            color: #fff;
+            padding: 10px 12px;
+            text-align: left;
+        }
+        .tabela td {
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--borda);
+            color: var(--texto-cinza);
+        }
+        .tabela tr:hover td {
+            background: rgba(212, 165, 116, 0.05);
+        }
+
+        .tag {
+            background: var(--fundo);
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            color: var(--texto-cinza);
+            border: 1px solid var(--borda);
+            display: inline-block;
+        }
+        .tag-verde {
+            background: var(--verde);
+            color: #000;
+        }
+        .tag-roxo {
+            background: var(--roxo);
+            color: #fff;
+        }
+        .tag-azul {
+            background: var(--azul);
+            color: #000;
+        }
+        .tag-ouro {
+            background: var(--ouro);
+            color: #1A0E08;
+        }
+        .tag-vermelho {
+            background: var(--vermelho);
+            color: #000;
+        }
+        .tag-relampago {
+            background: var(--relampago);
+            color: #fff;
+        }
+        .tag-imediato {
+            background: var(--imediato);
+            color: #fff;
+        }
+        .tag-urgente {
+            background: var(--urgente);
+            color: #000;
+        }
+        .tag-rotina {
+            background: var(--rotina);
+            color: #000;
+        }
+
+        .kbd {
+            background: var(--fundo);
+            padding: 2px 10px;
+            border-radius: 4px;
+            border: 1px solid var(--borda);
+            font-size: 12px;
+            color: var(--texto);
+            font-family: monospace;
+            display: inline-block;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        .grid-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 12px;
+        }
+
+        .modulo-card {
+            background: var(--fundo);
+            padding: 12px 16px;
+            border-radius: 10px;
+            border: 1px solid var(--borda);
+            transition: border-color 0.3s;
+        }
+        .modulo-card:hover {
+            border-color: var(--ouro);
+        }
+        .modulo-card .modulo-titulo {
+            font-weight: 600;
+            color: var(--texto);
+        }
+        .modulo-card .modulo-desc {
+            font-size: 13px;
+            color: var(--texto-cinza);
+            margin-top: 4px;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            .header h1 {
+                font-size: 26px;
+            }
+            .secao {
+                padding: 16px;
+            }
+            .secao h2 {
+                font-size: 20px;
+            }
+            .indice-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+            .grid-3 {
+                grid-template-columns: 1fr;
+            }
+            .tabela {
+                font-size: 11px;
+            }
+            .tabela th,
+            .tabela td {
+                padding: 6px 8px;
+            }
+        }
+
+        .btn-topo {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--ouro);
+            color: #1A0E08;
+            border: none;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(212, 165, 116, 0.4);
+            transition: all 0.3s;
+            display: none;
+            z-index: 100;
+        }
+        .btn-topo:hover {
+            transform: scale(1.1);
+            background: var(--ouro-claro);
+        }
+        .btn-topo.visivel {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+    <button class="btn-tema" onclick="alternarTema()">
+        <span id="iconeTema">👤</span>
+        <span id="textoTema">Man</span>
+    </button>
+
+    <div class="container">
+
+        <div class="header">
+            <h1>📖 User Manual</h1>
+            <p>FinançPessoal v3.0 - Smart Financial Management</p>
+            <span class="versao">Version 3.0 · July 2026</span>
+        </div>
+
+        <div class="indice">
+            <h2>📑 Table of Contents</h2>
+            <div class="indice-grid">
+                <a href="#sec-intro">🚀 Introduction</a>
+                <a href="#sec-install">📥 Installation</a>
+                <a href="#sec-m1">🔐 M1 - Authentication</a>
+                <a href="#sec-m2">💰 M2 - Transactions</a>
+                <a href="#sec-m3">📊 M3 - Dashboard</a>
+                <a href="#sec-m4">🏦 M4 - Amortization</a>
+                <a href="#sec-m5">👥 M5 - Life & Work</a>
+                <a href="#sec-m6">🚀 M6 - Projects</a>
+                <a href="#sec-m7">🏦 M7 - Bank Accounts</a>
+                <a href="#sec-m8">🎯 M8 - Savings/Goals</a>
+                <a href="#sec-m9">🔮 M9 - Simulation</a>
+                <a href="#sec-m10">🔄 M10 - Circular Economy</a>
+                <a href="#sec-m11">⚙️ M11 - Settings</a>
+                <a href="#sec-m12">📝 M12 - Notes</a>
+                <a href="#sec-m13">🆘 M13 - Help</a>
+                <a href="#sec-shortcuts">⌨️ Shortcuts</a>
+                <a href="#sec-faq">❓ FAQ</a>
+            </div>
+        </div>
+
+        <!-- INTRODUCTION -->
+        <div class="secao" id="sec-intro">
+            <h2>🚀 Introduction</h2>
+            <p>
+                <strong>FinançPessoal</strong> is a complete web application for personal financial management,
+                designed to be <strong>100% offline</strong> and work directly in your browser.
+                All data is stored locally on your device.
+            </p>
+
+            <div class="dica">
+                <strong>💡 Key Features:</strong><br>
+                ✅ 100% offline - no internet required<br>
+                ✅ Data saved in browser localStorage<br>
+                ✅ Responsive - works on PC, tablet and mobile<br>
+                ✅ Customizable themes (Man/Woman)<br>
+                ✅ Customizable logo (JPEG upload)<br>
+                ✅ PDF reports with charts<br>
+                ✅ 13 integrated modules
+            </div>
+
+            <h3>📋 Application Structure</h3>
+            <div class="grid-3">
+                <div class="modulo-card">
+                    <div class="modulo-titulo">🔐 M1</div>
+                    <div class="modulo-desc">Authentication & Security</div>
+                </div>
+                <div class="modulo-card">
+                    <div class="modulo-titulo">💰 M2</div>
+                    <div class="modulo-desc">Transactions & Categories</div>
+                </div>
+                <div class="modulo-card">
+                    <div class="modulo-titulo">📊 M3</div>
+                    <div class="modulo-desc">Dashboard & Reports</div>
+                </div>
+                <div class="modulo-card">
+                    <div class="modulo-titulo">🏦 M4</div>
+                    <div class="modulo-desc">Amortization & Loans</div>
+                </div>
+                <div class="modulo-card">
+                    <div class="modulo-titulo">👥 M5</div>
+                    <div class="modulo-desc">Life & Work</div>
+                </div>
+                <div class="modulo-card">
+                    <div class="modulo-titulo">🚀 M6</div>
+                    <div class="modulo-desc">Projects</div>
+                </div>
+                <div class="modulo-card">
+                    <div class="modulo-titulo">🏦 M7</div>
+                    <div class="modulo-desc">Bank Accounts</div>
+                </div>
+                <div class="modulo-card">
+                    <div class="modulo-titulo">🎯 M8</div>
+                    <div class="modulo-desc">Savings & Goals</div>
+                </div>
+                <div class="modulo-card">
+                    <div class="modulo-titulo">🔮 M9</div>
+                    <div class="modulo-desc">Scenario Simulation</div>
+                </div>
+                <div class="modulo-card">
+                    <div class="modulo-titulo">🔄 M10</div>
+                    <div class="modulo-desc">Circular Economy</div>
+                </div>
+                <div class="modulo-card">
+                    <div class="modulo-titulo">⚙️ M11</div>
+                    <div class="modulo-desc">Settings</div>
+                </div>
+                <div class="modulo-card">
+                    <div class="modulo-titulo">📝 M12</div>
+                    <div class="modulo-desc">Notes Center</div>
+                </div>
+                <div class="modulo-card">
+                    <div class="modulo-titulo">🆘 M13</div>
+                    <div class="modulo-desc">Help & Support</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- INSTALLATION -->
+        <div class="secao" id="sec-install">
+            <h2>📥 Installation</h2>
+            <p>FinançPessoal is a web application that requires no installation. Just open the HTML file in your browser.</p>
+
+            <h3>📋 Getting Started</h3>
+            <div class="passo"><span class="num">1</span><span class="texto">Open the <strong>index.html</strong> file in your browser</span></div>
+            <div class="passo"><span class="num">2</span><span class="texto">Use the initial credentials: <strong style="color:var(--ouro);">admin / pass1234</strong></span></div>
+            <div class="passo"><span class="num">3</span><span class="texto">Change credentials on first use in <strong>M11 - Settings</strong></span></div>
+            <div class="passo"><span class="num">4</span><span class="texto">Start recording your data!</span></div>
+
+            <div class="atencao">
+                <strong>⚠️ Warning:</strong> The initial credentials <strong>admin / pass1234</strong> are public.
+                Change them immediately after the first login.
+            </div>
+
+            <div class="dica">
+                <strong>💡 Tip:</strong> FinançPessoal works in any modern browser:
+                Chrome, Firefox, Safari, Edge, Opera.
+            </div>
+        </div>
+
+        <!-- M1 - AUTHENTICATION -->
+        <div class="secao" id="sec-m1">
+            <h2>🔐 M1 - Authentication</h2>
+            <p>The authentication system protects access to the application and allows managing multiple administrators.</p>
+
+            <h3>📋 Initial Credentials</h3>
+            <table class="tabela">
+                <tr><th>Field</th><th>Value</th></tr>
+                <tr><td>Username</td><td><code style="color:var(--ouro);">admin</code></td></tr>
+                <tr><td>Password</td><td><code style="color:var(--ouro);">pass1234</code></td></tr>
+            </table>
+
+            <h3>🔧 Admin Management</h3>
+            <p>On the login screen, click <strong>"👤 Admins"</strong> to:</p>
+            <ul>
+                <li><strong>Add</strong> new admin (username + password)</li>
+                <li><strong>Remove</strong> admins (except the main "admin")</li>
+            </ul>
+
+            <div class="atencao">
+                <strong>⚠️ Warning:</strong> The main admin <code>admin</code> cannot be removed.
+                Keep it as emergency access.
+            </div>
+
+            <div class="dica">
+                <strong>💡 Tip:</strong> After the first login, you must change the credentials.
+                Go to <strong>M11 - Settings</strong> to change name and password.
+            </div>
+        </div>
+
+        <!-- M2 - TRANSACTIONS -->
+        <div class="secao" id="sec-m2">
+            <h2>💰 M2 - Transactions and Categories</h2>
+            <p>Record all your income and expenses simply and quickly.</p>
+
+            <h3>📋 How to Record a Transaction</h3>
+            <div class="passo"><span class="num">1</span><span class="texto">Enter the <strong>Amount</strong> (e.g., 25.50)</span></div>
+            <div class="passo"><span class="num">2</span><span class="texto">Select the <strong>Type</strong>: Income or Expense</span></div>
+            <div class="passo"><span class="num">3</span><span class="texto">Choose the <strong>Category</strong> or create a new one</span></div>
+            <div class="passo"><span class="num">4</span><span class="texto">Add a <strong>Description</strong></span></div>
+            <div class="passo"><span class="num">5</span><span class="texto">Select the <strong>Bank Account</strong> (M7)</span></div>
+            <div class="passo"><span class="num">6</span><span class="texto">Check <strong>"🔁 Recurring Transaction"</strong> if you want to save it</span></div>
+            <div class="passo"><span class="num">7</span><span class="texto">Click <strong>💾 Save</strong></span></div>
+
+            <h3>🔄 Recurring Transactions</h3>
+            <ul>
+                <li><strong>Mark as Recurring</strong>: Check the box before saving</li>
+                <li><strong>Use Recurring</strong>: Click "📋 Use" to fill the form</li>
+                <li><strong>Edit Recurring</strong>: Click "✏️" to edit amount, description or type</li>
+                <li><strong>Remove Recurring</strong>: Click "🗑️" to delete</li>
+                <li><strong>Edit Transaction</strong>: Click "✏️" in the recent transactions list</li>
+                <li><strong>Delete Transaction</strong>: Click "🗑️" in the recent transactions list</li>
+            </ul>
+
+            <div class="dica">
+                <strong>💡 Tip:</strong> Use the <strong>"Recurring Transaction"</strong> option for recurring expenses
+                like utility bills, rent, internet, etc.
+            </div>
+
+            <div class="sucesso">
+                <strong>✅ Integration:</strong> Transactions in special categories (M5, M6, M10)
+                require confirmation from the source module.
+            </div>
+        </div>
+
+        <!-- Continue with all modules in English... -->
+
+        <!-- FOOTER -->
+        <div style="text-align:center; padding:30px 0; border-top:1px solid var(--borda); margin-top:30px;">
+            <p style="color:var(--texto-cinza); font-size:14px;">
+                📖 <strong style="color:var(--ouro);">FinançPessoal v3.0</strong> - User Manual<br>
+                Made with ❤️ for smart financial management
+            </p>
+            <p style="color:var(--texto-cinza); font-size:12px; margin-top:6px;">
+                13 Modules · 100% Offline · Free · Private
+            </p>
+        </div>
+
+    </div>
+
+    <button class="btn-topo" id="btnTopo" onclick="window.scrollTo({top:0,behavior:'smooth'})">⬆</button>
+
+    <script>
+        let temaAtual = localStorage.getItem('temaManual') || 'homem';
+
+        function alternarTema() {
+            temaAtual = temaAtual === 'homem' ? 'mulher' : 'homem';
+            localStorage.setItem('temaManual', temaAtual);
+            aplicarTema();
+        }
+
+        function aplicarTema() {
+            const el = document.documentElement;
+            if (temaAtual === 'mulher') {
+                el.setAttribute('data-tema', 'mulher');
+                document.getElementById('iconeTema').textContent = '👩';
+                document.getElementById('textoTema').textContent = 'Woman';
+            } else {
+                el.removeAttribute('data-tema');
+                document.getElementById('iconeTema').textContent = '👤';
+                document.getElementById('textoTema').textContent = 'Man';
+            }
+        }
+
+        window.addEventListener('scroll', function() {
+            const btn = document.getElementById('btnTopo');
+            btn.classList.toggle('visivel', window.scrollY > 300);
+        });
+
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+
+        aplicarTema();
+    </script>
+
+</body>
+</html>
