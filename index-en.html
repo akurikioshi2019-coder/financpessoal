@@ -1,0 +1,3826 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinançPessoal - Smart Financial Manager</title>
+
+    <!-- External Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js">
+    </script>
+
+    <style>
+        /* ================================================================
+           VARIABLES AND THEMES (Honey Brown 🍯)
+           ================================================================ */
+
+        /* MAN THEME (Honey Brown + Soft Green) */
+        :root {
+            --fundo: #2C1810;
+            --fundo-card: #3D2317;
+            --card: #4A2C1E;
+            --borda: #5C3D2E;
+            --primaria: #2D6A4F;
+            --secundaria: #40916C;
+            --destaque: #52B788;
+            --destaque-claro: #74C69D;
+            --ouro: #D4A574;
+            --ouro-claro: #E8C99B;
+            --ouro-escuro: #A8855A;
+            --texto: #F5F0EB;
+            --texto-cinza: #C4B5A5;
+            --texto-escuro: #1A0E08;
+            --cor-receita: #6BCB77;
+            --cor-receita-grad: linear-gradient(135deg, #6BCB77, #52B788);
+            --cor-despesa: #FF8A8A;
+            --cor-despesa-grad: linear-gradient(135deg, #FF8A8A, #FF6B6B);
+            --cor-saldo: #D4A574;
+            --cor-saldo-grad: linear-gradient(135deg, #D4A574, #E8C99B);
+            --cor-fundo-chart: rgba(212, 165, 116, 0.06);
+            --verde: #6BCB77;
+            --vermelho: #FF8A8A;
+            --laranja: #F5A623;
+            --azul: #74B9FF;
+            --roxo: #A78BFA;
+            --relampago: #FF4444;
+            --imediato: #FF6B35;
+            --urgente: #FFD93D;
+            --rotina: #6BCB77;
+            --sombra: 0 4px 20px rgba(0, 0, 0, 0.4);
+            --sombra-clara: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        /* WOMAN THEME (Honey Brown + Soft Violet) */
+        [data-tema="mulher"] {
+            --primaria: #6D28D9;
+            --secundaria: #8B5CF6;
+            --destaque: #A78BFA;
+            --destaque-claro: #C084FC;
+            --cor-receita: #A78BFA;
+            --cor-receita-grad: linear-gradient(135deg, #A78BFA, #8B5CF6);
+            --cor-despesa: #F9A8D4;
+            --cor-despesa-grad: linear-gradient(135deg, #F9A8D4, #EC4899);
+            --cor-saldo: #D4A574;
+            --cor-saldo-grad: linear-gradient(135deg, #D4A574, #E8C99B);
+            --cor-fundo-chart: rgba(212, 165, 116, 0.06);
+            --roxo: #A78BFA;
+        }
+
+        /* ================================================================
+           RESET AND BASE
+           ================================================================ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background: var(--fundo);
+            color: var(--texto);
+            padding: 12px;
+            padding-bottom: 90px;
+            min-height: 100vh;
+            transition: background 0.4s, color 0.4s;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--fundo);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--ouro);
+            border-radius: 10px;
+        }
+
+        /* ================================================================
+           MAIN LAYOUT - RESPONSIVE
+           ================================================================ */
+        #app {
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        @media (min-width: 768px) {
+            #app {
+                max-width: 700px;
+            }
+            .grid-2 {
+                grid-template-columns: 1fr 1fr;
+            }
+            .grid-3 {
+                grid-template-columns: 1fr 1fr 1fr;
+            }
+            .menu {
+                max-width: 700px;
+            }
+            body {
+                padding: 20px;
+                padding-bottom: 90px;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            #app {
+                max-width: 900px;
+            }
+            .grid-2 {
+                grid-template-columns: 1fr 1fr;
+            }
+            .grid-3 {
+                grid-template-columns: 1fr 1fr 1fr;
+            }
+            .menu {
+                max-width: 900px;
+            }
+            .menu button {
+                font-size: 11px;
+                padding: 6px 4px;
+            }
+            .menu button .menu-icon {
+                font-size: 20px;
+            }
+            body {
+                padding: 24px;
+                padding-bottom: 90px;
+            }
+        }
+
+        @media (min-width: 1440px) {
+            #app {
+                max-width: 1100px;
+            }
+            .menu {
+                max-width: 1100px;
+            }
+            .grid-2 {
+                grid-template-columns: 1fr 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 400px) {
+            body {
+                padding: 8px;
+                padding-bottom: 80px;
+            }
+            .menu button {
+                font-size: 8px;
+                padding: 4px 2px;
+            }
+            .menu button .menu-icon {
+                font-size: 14px;
+            }
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+            .grid-3 {
+                grid-template-columns: 1fr;
+            }
+            .header h1 {
+                font-size: 18px;
+            }
+            .valor {
+                font-size: 22px;
+            }
+        }
+
+        /* ================================================================
+           HEADER WITH LOGO
+           ================================================================ */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            margin-bottom: 16px;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-container {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            overflow: hidden;
+            background: var(--primaria);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            cursor: pointer;
+            border: 2px solid var(--borda);
+            transition: border-color 0.3s;
+            position: relative;
+        }
+
+        .logo-container:hover {
+            border-color: var(--ouro);
+        }
+
+        .logo-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .logo-placeholder {
+            font-size: 18px;
+            font-weight: 700;
+            color: #fff;
+            text-align: center;
+            line-height: 1.1;
+        }
+
+        .logo-upload-input {
+            display: none;
+        }
+
+        .app-titulo {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--texto);
+            letter-spacing: -0.5px;
+        }
+        .app-titulo span {
+            color: var(--ouro);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-tema {
+            background: var(--card);
+            border: 1px solid var(--borda);
+            color: var(--texto);
+            padding: 6px 12px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+        .btn-tema:hover {
+            border-color: var(--ouro);
+            background: var(--primaria);
+            transform: scale(1.02);
+        }
+
+        /* ================================================================
+           CARDS
+           ================================================================ */
+        .card {
+            background: var(--card);
+            padding: 16px;
+            border-radius: 16px;
+            margin-bottom: 14px;
+            border: 1px solid var(--borda);
+            transition: all 0.3s;
+            box-shadow: var(--sombra-clara);
+        }
+        .card:hover {
+            border-color: var(--ouro);
+        }
+
+        /* ================================================================
+           BUTTONS
+           ================================================================ */
+        .btn {
+            background: var(--primaria);
+            color: #fff;
+            border: none;
+            padding: 12px 18px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            display: inline-block;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        .btn:hover {
+            background: var(--secundaria);
+            transform: translateY(-2px);
+            box-shadow: var(--sombra);
+        }
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--borda);
+            color: var(--texto);
+            padding: 8px 14px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+            width: auto;
+        }
+        .btn-outline:hover {
+            border-color: var(--ouro);
+            background: var(--primaria);
+            color: #fff;
+        }
+
+        .btn-pequeno {
+            padding: 6px 12px;
+            font-size: 12px;
+            width: auto;
+        }
+        .btn-verde {
+            background: var(--verde);
+            color: #000;
+        }
+        .btn-vermelho {
+            background: var(--vermelho);
+            color: #000;
+        }
+        .btn-roxo {
+            background: var(--roxo);
+            color: #fff;
+        }
+        .btn-azul {
+            background: var(--azul);
+            color: #000;
+        }
+        .btn-ouro {
+            background: var(--ouro);
+            color: #1A0E08;
+        }
+        .btn-ouro:hover {
+            background: var(--ouro-claro);
+        }
+
+        /* ================================================================
+           INPUTS
+           ================================================================ */
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 10px 12px;
+            background: var(--fundo);
+            border: 1px solid var(--borda);
+            border-radius: 10px;
+            color: var(--texto);
+            margin: 6px 0 12px;
+            transition: border-color 0.3s;
+            font-size: 14px;
+        }
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--ouro);
+            box-shadow: 0 0 0 3px rgba(212, 165, 116, 0.12);
+        }
+
+        input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            margin: 0;
+            cursor: pointer;
+            accent-color: var(--primaria);
+        }
+
+        /* ================================================================
+           VALUES
+           ================================================================ */
+        .valor {
+            font-size: 28px;
+            font-weight: 700;
+        }
+        .positivo {
+            color: var(--cor-receita);
+        }
+        .negativo {
+            color: var(--cor-despesa);
+        }
+
+        /* ================================================================
+           LINES
+           ================================================================ */
+        .linha {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--borda);
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+        .linha:last-child {
+            border-bottom: none;
+        }
+
+        /* ================================================================
+           TABS
+           ================================================================ */
+        .tabs {
+            display: flex;
+            gap: 8px;
+            background: var(--fundo);
+            padding: 4px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            overflow-x: auto;
+            flex-wrap: nowrap;
+        }
+        .tabs button {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--texto-cinza);
+            padding: 10px 14px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+            white-space: nowrap;
+            min-width: 70px;
+            font-size: 13px;
+        }
+        .tabs button.ativo {
+            background: var(--primaria);
+            color: #fff;
+        }
+        .tabs button:hover:not(.ativo) {
+            color: var(--texto);
+        }
+
+        /* ================================================================
+           FIXED MENU - COMPLETE (13 MODULES)
+           ================================================================ */
+        .menu {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 600px;
+            background: var(--card);
+            display: flex;
+            justify-content: space-around;
+            padding: 6px 2px;
+            border-top: 1px solid var(--borda);
+            z-index: 1000;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.4);
+            overflow-x: auto;
+            gap: 2px;
+        }
+        .menu button {
+            background: none;
+            border: none;
+            color: var(--texto-cinza);
+            font-size: 8px;
+            cursor: pointer;
+            text-align: center;
+            flex: 0 0 auto;
+            padding: 4px 6px;
+            transition: color 0.3s;
+            border-radius: 6px;
+            min-width: 38px;
+        }
+        .menu button .menu-icon {
+            font-size: 16px;
+            display: block;
+            margin-bottom: 1px;
+        }
+        .menu button.ativo {
+            color: var(--ouro);
+            font-weight: 600;
+            background: rgba(212, 165, 116, 0.10);
+        }
+        .menu button:hover {
+            color: var(--texto);
+        }
+
+        @media (min-width: 600px) {
+            .menu button {
+                font-size: 9px;
+                padding: 6px 8px;
+                min-width: 44px;
+            }
+            .menu button .menu-icon {
+                font-size: 18px;
+            }
+        }
+        @media (min-width: 1024px) {
+            .menu button {
+                font-size: 10px;
+                padding: 8px 12px;
+                min-width: 50px;
+            }
+            .menu button .menu-icon {
+                font-size: 20px;
+            }
+        }
+
+        /* ================================================================
+           GRIDS
+           ================================================================ */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 12px;
+        }
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 10px;
+        }
+
+        /* ================================================================
+           CHART - SOFT COLORS
+           ================================================================ */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 280px;
+            margin: 16px auto;
+            background: var(--cor-fundo-chart);
+            border-radius: 12px;
+            padding: 16px;
+            border: 1px solid var(--borda);
+        }
+
+        /* ================================================================
+           MODALS
+           ================================================================ */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            backdrop-filter: blur(4px);
+        }
+        .modal-content {
+            background: var(--card);
+            padding: 24px;
+            border-radius: 16px;
+            max-width: 420px;
+            width: 100%;
+            border: 1px solid var(--borda);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .modal-content h2 {
+            margin-bottom: 16px;
+            color: var(--texto);
+        }
+
+        /* ================================================================
+           TAGS AND PRIORITIES
+           ================================================================ */
+        .tag {
+            background: var(--fundo);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            color: var(--texto-cinza);
+            border: 1px solid var(--borda);
+            display: inline-block;
+        }
+        .tag-verde {
+            background: var(--verde);
+            color: #000;
+        }
+        .tag-roxo {
+            background: var(--roxo);
+            color: #fff;
+        }
+        .tag-azul {
+            background: var(--azul);
+            color: #000;
+        }
+        .tag-ouro {
+            background: var(--ouro);
+            color: #1A0E08;
+        }
+        .tag-vermelho {
+            background: var(--vermelho);
+            color: #000;
+        }
+        .tag-laranja {
+            background: var(--laranja);
+            color: #000;
+        }
+        .tag-relampago {
+            background: var(--relampago);
+            color: #fff;
+        }
+        .tag-imediato {
+            background: var(--imediato);
+            color: #fff;
+        }
+        .tag-urgente {
+            background: var(--urgente);
+            color: #000;
+        }
+        .tag-rotina {
+            background: var(--rotina);
+            color: #000;
+        }
+
+        .prioridade-relampago {
+            color: var(--relampago);
+        }
+        .prioridade-imediato {
+            color: var(--imediato);
+        }
+        .prioridade-urgente {
+            color: var(--urgente);
+        }
+        .prioridade-rotina {
+            color: var(--rotina);
+        }
+
+        .circulo-prioridade {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            margin-right: 6px;
+            flex-shrink: 0;
+        }
+        .circulo-relampago {
+            background: var(--relampago);
+        }
+        .circulo-imediato {
+            background: var(--imediato);
+        }
+        .circulo-urgente {
+            background: var(--urgente);
+        }
+        .circulo-rotina {
+            background: var(--rotina);
+        }
+
+        /* ================================================================
+           AVATAR
+           ================================================================ */
+        .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--primaria);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        /* ================================================================
+           PROGRESS BAR
+           ================================================================ */
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--fundo);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 6px 0;
+        }
+        .progress-bar .progress-fill {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.6s;
+            background: var(--primaria);
+        }
+
+        /* ================================================================
+           QuickEntryFAB (Floating Action Button)
+           ================================================================ */
+        .fab-container {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            z-index: 999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .fab {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: none;
+            font-size: 28px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            position: relative;
+        }
+
+        .fab:hover {
+            transform: scale(1.08);
+        }
+        .fab:active {
+            transform: scale(0.95);
+        }
+
+        .fab-receita {
+            background: var(--cor-receita);
+            color: #000;
+        }
+        .fab-despesa {
+            background: var(--cor-despesa);
+            color: #000;
+        }
+
+        .fab-label {
+            font-size: 10px;
+            color: var(--texto-cinza);
+            background: var(--card);
+            padding: 4px 10px;
+            border-radius: 12px;
+            border: 1px solid var(--borda);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .fab-container:hover .fab-label {
+            opacity: 1;
+        }
+
+        /* ================================================================
+           NOTES
+           ================================================================ */
+        .nota-item {
+            background: var(--fundo);
+            padding: 12px 14px;
+            border-radius: 12px;
+            margin-bottom: 8px;
+            border-left: 4px solid var(--primaria);
+            transition: border-color 0.3s;
+        }
+        .nota-item:hover {
+            border-color: var(--ouro);
+        }
+
+        .nota-item .nota-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4px;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+        .nota-item .nota-modulo {
+            font-size: 11px;
+            color: var(--texto-cinza);
+            background: var(--card);
+            padding: 2px 10px;
+            border-radius: 12px;
+        }
+        .nota-item .nota-data {
+            font-size: 11px;
+            color: var(--texto-cinza);
+        }
+        .nota-item .nota-titulo {
+            font-weight: 600;
+            font-size: 15px;
+        }
+        .nota-item .nota-texto {
+            color: var(--texto-cinza);
+            font-size: 13px;
+            margin-top: 4px;
+        }
+
+        /* ================================================================
+           LOANS / AMORTIZATION
+           ================================================================ */
+        .emprestimo-item {
+            background: var(--fundo);
+            padding: 14px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            border-left: 4px solid var(--primaria);
+        }
+
+        /* ================================================================
+           INVESTMENTS / CIRCULAR ECONOMY
+           ================================================================ */
+        .investimento-item {
+            background: var(--fundo);
+            padding: 14px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            border-left: 4px solid var(--ouro);
+        }
+
+        /* ================================================================
+           PDF CATEGORY SELECTION
+           ================================================================ */
+        .cat-pdf-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 6px 0;
+            border-bottom: 1px solid var(--borda);
+        }
+        .cat-pdf-item:last-child {
+            border-bottom: none;
+        }
+        .cat-pdf-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            flex-shrink: 0;
+        }
+        .cat-pdf-item label {
+            margin: 0;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        /* ================================================================
+           PDF - PAGE BREAK SETTINGS
+           ================================================================ */
+        .pdf-page {
+            page-break-after: always;
+            page-break-inside: avoid;
+        }
+        .pdf-no-break {
+            page-break-inside: avoid;
+        }
+
+        /* ================================================================
+           UTILITIES
+           ================================================================ */
+        .text-center {
+            text-align: center;
+        }
+        .mt-8 {
+            margin-top: 8px;
+        }
+        .mt-16 {
+            margin-top: 16px;
+        }
+        .mb-8 {
+            margin-bottom: 8px;
+        }
+        .mb-16 {
+            margin-bottom: 16px;
+        }
+        .gap-8 {
+            gap: 8px;
+        }
+        .flex {
+            display: flex;
+        }
+        .flex-between {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        .flex-center {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .w-full {
+            width: 100%;
+        }
+        .relative {
+            position: relative;
+        }
+        .hidden {
+            display: none;
+        }
+        .cursor-pointer {
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ================================================================
+    MAIN APP
+    ================================================================ -->
+    <div id="app">
+
+        <!-- ============================================================
+        GLOBAL HEADER (Logo + Theme)
+        ============================================================ -->
+        <div class="header">
+            <div class="header-left">
+                <div class="logo-container" onclick="document.getElementById('logoUpload').click()" title="Click to change logo">
+                    <img id="logoPreview" style="display:none;" alt="Logo">
+                    <span id="logoPlaceholder" class="logo-placeholder">FP</span>
+                    <input type="file" id="logoUpload" class="logo-upload-input" accept="image/jpeg" onchange="uploadLogo(event)">
+                </div>
+                <div class="app-titulo">Finanç<span>Pessoal</span></div>
+            </div>
+            <div class="header-actions">
+                <button class="btn-tema" onclick="alternarTema()">
+                    <span id="iconeTema">👤</span>
+                    <span id="textoTema">Man</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- ============================================================
+        LOGIN SCREEN (M1)
+        ============================================================ -->
+        <div id="tela-login">
+            <div class="card" style="text-align:center; padding:30px 20px;">
+                <h2 style="margin-bottom:8px; color:var(--ouro);">🔐 FinançPessoal</h2>
+                <p style="color:var(--texto-cinza); font-size:14px; margin-bottom:20px;">Smart Financial Management</p>
+                <label>Username</label>
+                <input type="text" id="login-usuario" placeholder="Enter your username">
+                <label>Password</label>
+                <input type="password" id="login-senha" placeholder="Enter your password">
+                <button class="btn" onclick="fazerLogin()">Login</button>
+                <div style="margin-top:12px;">
+                    <button class="btn-outline btn-pequeno" onclick="mostrarTela('tela-admin')">👤 Admins</button>
+                </div>
+                <p style="color:var(--texto-cinza); font-size:11px; margin-top:16px;">
+                    Initial credentials in User Manual
+                </p>
+            </div>
+        </div>
+
+        <!-- ============================================================
+        ADMIN SCREEN (M1)
+        ============================================================ -->
+        <div id="tela-admin" style="display:none;">
+            <div class="header">
+                <button class="btn-outline" onclick="mostrarTela('tela-login')">←</button>
+                <h1>👤 Admins</h1>
+            </div>
+            <div class="card">
+                <h3>Add Admin</h3>
+                <input type="text" id="novo-admin-usuario" placeholder="Username">
+                <input type="text" id="novo-admin-senha" placeholder="Password">
+                <button class="btn btn-verde" onclick="adicionarAdmin()">➕ Add</button>
+            </div>
+            <div class="card">
+                <h3>Admins</h3>
+                <div id="lista-admins"></div>
+            </div>
+        </div>
+
+        <!-- ============================================================
+        HOME SCREEN
+        ============================================================ -->
+        <div id="tela-home" style="display:none;">
+            <div class="card">
+                <div class="flex-between">
+                    <h2>💰 BALANCE</h2>
+                    <button class="btn-outline btn-pequeno" onclick="fazerLogout()">🚪 Logout</button>
+                </div>
+                <div class="valor positivo" id="saldo-atual">€ 0.00</div>
+                <div style="font-size:13px; color:var(--texto-cinza);" id="saldo-detalhe"></div>
+            </div>
+
+            <div class="card" onclick="mostrarTela('tela-anotacoes')" style="cursor:pointer;">
+                <div class="flex-between"><h2>📝 Recent Notes</h2><span style="color:var(--ouro);">view all →</span></div>
+                <div id="anotacoes-recentes-home"></div>
+            </div>
+
+            <div class="card">
+                <h2>📅 Upcoming Events</h2>
+                <div id="alertas-gerais"></div>
+            </div>
+
+            <div class="grid-2">
+                <div class="card" onclick="mostrarTela('tela-lancar')" style="cursor:pointer; text-align:center;">
+                    <div style="font-size:32px;">➕</div>
+                    <div>New Transaction</div>
+                </div>
+                <div class="card" onclick="mostrarTela('tela-dashboard')" style="cursor:pointer; text-align:center;">
+                    <div style="font-size:32px;">📊</div>
+                    <div>Dashboard</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================
+        TRANSACTIONS SCREEN (M2)
+        ============================================================ -->
+        <div id="tela-lancar" style="display:none;">
+            <div class="header">
+                <button class="btn-outline" onclick="mostrarTela('tela-home')">←</button>
+                <h1>📝 New Transaction</h1>
+            </div>
+
+            <div class="card">
+                <label>Amount (€)</label>
+                <input type="number" id="valor" placeholder="0.00" step="0.01">
+
+                <label>Type</label>
+                <select id="tipo" onchange="atualizarCategorias()">
+                    <option>Expense</option>
+                    <option>Income</option>
+                </select>
+
+                <label>Category</label>
+                <select id="categoria"></select>
+                <button class="btn-outline btn-pequeno mt-8" onclick="abrirModalCategoria()">➕ New Category</button>
+
+                <label>Description</label>
+                <input type="text" id="descricao" placeholder="Ex: Supermarket">
+
+                <label>Bank Account (M7)</label>
+                <select id="conta-lancamento">
+                    <option value="">Select account...</option>
+                </select>
+
+                <!-- Recurring Transaction -->
+                <div style="margin:12px 0; display:flex; align-items:center; gap:12px; background:var(--fundo); padding:10px 14px; border-radius:10px; border:1px solid var(--borda);">
+                    <input type="checkbox" id="lancamento-frequente">
+                    <label for="lancamento-frequente" style="margin:0; cursor:pointer; font-weight:500; color:var(--ouro);">
+                        🔁 Recurring Transaction
+                    </label>
+                    <span style="font-size:11px; color:var(--texto-cinza); margin-left:auto;">(Save for later use)</span>
+                </div>
+
+                <button class="btn mt-8" onclick="guardarLancamento()">💾 Save</button>
+            </div>
+
+            <!-- Recent Transactions -->
+            <div class="card">
+                <div class="flex-between">
+                    <h3>📋 Recent Transactions</h3>
+                    <span style="font-size:11px; color:var(--texto-cinza);">(Click to edit)</span>
+                </div>
+                <div id="ultimos-lancamentos"></div>
+            </div>
+
+            <!-- Recurring Transactions -->
+            <div class="card">
+                <div class="flex-between">
+                    <h3>🔄 Recurring Transactions</h3>
+                    <button class="btn-outline btn-pequeno" onclick="carregarFrequentes()" title="Refresh list">🔄</button>
+                </div>
+                <div id="lancamentos-frequentes"></div>
+            </div>
+        </div>
+
+        <!-- ============================================================
+        DASHBOARD SCREEN (M3)
+        ============================================================ -->
+        <div id="tela-dashboard" style="display:none;">
+            <div class="header">
+                <button class="btn-outline" onclick="mostrarTela('tela-home')">←</button>
+                <h1>📊 Dashboard</h1>
+            </div>
+
+            <div class="card" id="area-pdf">
+                <h2>Summary: <span id="mes-atual"></span></h2>
+                <div class="grid-2">
+                    <div><h3>Income</h3><div class="valor positivo" id="total-receitas">€ 0</div></div>
+                    <div><h3>Expenses</h3><div class="valor negativo" id="total-despesas">€ 0</div></div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="graficoPizza"></canvas>
+                </div>
+                <div id="lista-categorias"></div>
+            </div>
+
+            <!-- Category Selection for PDF -->
+            <div class="card">
+                <h3>📂 Select Categories for Report</h3>
+                <div id="selecao-categorias-pdf"></div>
+                <button class="btn btn-ouro mt-8" onclick="gerarPDFPersonalizado()">
+                    📄 Generate PDF with Selected Categories
+                </button>
+            </div>
+
+            <div class="grid-2">
+                <button class="btn btn-vermelho" onclick="exportarPDF()">📄 Export PDF</button>
+            </div>
+        </div>
+
+        <!-- ============================================================
+        AMORTIZATION SCREEN (M4)
+        ============================================================ -->
+        <div id="tela-amortizacoes" style="display:none;">
+            <div class="header">
+                <button class="btn-outline" onclick="mostrarTela('tela-home')">←</button>
+                <h1>🏦 Amortization</h1>
+                <button class="btn btn-pequeno" onclick="addEmprestimo()">+ New</button>
+            </div>
+
+            <div class="card">
+                <div class="grid-3 text-center">
+                    <div><span style="color:var(--texto-cinza);">Active</span><br><strong id="total-emprestimos">0</strong></div>
+                    <div><span style="color:var(--texto-cinza);">Total Debt</span><br><strong id="saldo-devedor-total">€ 0</strong></div>
+                    <div><span style="color:var(--texto-cinza);">Total Installment</span><br><strong id="parcela-total">€ 0</strong></div>
+                </div>
+            </div>
+
+            <div id="lista-emprestimos"></div>
+        </div>
+
+        <!-- ============================================================
+        LIFE & WORK SCREEN (M5)
+        ============================================================ -->
+        <div id="tela-vida-trabalho" style="display:none;">
+            <div class="header">
+                <button class="btn-outline" onclick="mostrarTela('tela-home')">←</button>
+                <h1>👥 Life & Work</h1>
+            </div>
+
+            <div class="tabs">
+                <button id="tab-familia" class="ativo" onclick="trocarTabM5('familia')">👨‍👩‍👧 Family</button>
+                <button id="tab-prof" onclick="trocarTabM5('prof')">💼 Professional</button>
+                <button id="tab-m5-notas" onclick="trocarTabM5('notas')">📝 Notes</button>
+            </div>
+
+            <!-- Family -->
+            <div id="conteudo-familia">
+                <div class="card">
+                    <div class="flex-between">
+                        <h2>📆 Calendar</h2>
+                        <button class="btn-outline btn-pequeno" onclick="addEventoM5('familia')">+ Event</button>
+                    </div>
+                    <div id="calendario-familia"></div>
+                </div>
+                <div class="card">
+                    <div class="flex-between">
+                        <h2>👨‍👩‍👧 Members</h2>
+                        <button class="btn-outline btn-pequeno" onclick="addMembroM5('familia')">+ Member</button>
+                    </div>
+                    <div id="membros-familia"></div>
+                </div>
+                <div class="card">
+                    <div class="flex-between">
+                        <h2>📋 Family Spending Summary</h2>
+                    </div>
+                    <div id="resumo-gastos-familia"></div>
+                </div>
+            </div>
+
+            <!-- Professional -->
+            <div id="conteudo-prof" style="display:none;">
+                <div class="card">
+                    <div class="flex-between">
+                        <h2>📆 Agenda</h2>
+                        <button class="btn-outline btn-pequeno" onclick="addEventoM5('prof')">+ Commitment</button>
+                    </div>
+                    <div id="agenda-prof"></div>
+                </div>
+                <div class="card">
+                    <div class="flex-between">
+                        <h2>👥 Team</h2>
+                        <button class="btn-outline btn-pequeno" onclick="addMembroM5('prof')">+ Member</button>
+                    </div>
+                    <div id="equipe-prof"></div>
+                </div>
+            </div>
+
+            <!-- Notes M5 -->
+            <div id="conteudo-m5-notas" style="display:none;">
+                <div class="card">
+                    <div class="flex-between">
+                        <h2>📝 M5 Notes</h2>
+                        <button class="btn-outline btn-pequeno" onclick="abrirModalAnotacao('M5')">+ New</button>
+                    </div>
+                    <div id="anotacoes-m5"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================
+        PROJECTS SCREEN (M6)
+        ============================================================ -->
+        <div id="tela-projetos" style="display:none;">
+            <div class="header">
+                <button class="btn-outline" onclick="mostrarTela('tela-home')">←</button>
+                <h1>🚀 Projects</h1>
+                <button class="btn btn-pequeno" onclick="addProjetoM6()">+ New</button>
+            </div>
+
+            <div class="card">
+                <div class="grid-3 text-center">
+                    <div><span style="color:var(--texto-cinza);">Active</span><br><strong id="total-projetos">0</strong></div>
+                    <div><span style="color:var(--texto-cinza);">Total Cost</span><br><strong id="custo-projetos">€ 0</strong></div>
+                    <div><span style="color:var(--texto-cinza);">Completed</span><br><strong id="concluidos-projetos">0</strong></div>
+                </div>
+            </div>
+
+            <div id="lista-projetos-m6"></div>
+        </div>
+
+        <!-- ============================================================
+        BANK ACCOUNTS SCREEN (M7)
+        ============================================================ -->
+        <div id="tela-contas" style="display:none;">
+            <div class="header">
+                <button class="btn-outline" onclick="mostrarTela('tela-home')">←</button>
+                <h1>🏦 Accounts</h1>
+                <button class="btn btn-pequeno" onclick="addContaM7()">+ New</button>
+            </div>
+
+            <div class="card">
+                <div class="grid-2 text-center">
+                    <div><span style="color:var(--texto-cinza);">Total Accounts</span><br><strong id="total-contas">0</strong></div>
+                    <div><span style="color:var(--texto-cinza);">Total Balance</span><br><strong id="saldo-contas-total">€ 0</strong></div>
+                </div>
+            </div>
+
+            <div id="lista-contas-m7"></div>
+        </div>
+
+        <!-- ============================================================
+        SAVINGS/GOALS SCREEN (M8)
+        ============================================================ -->
+        <div id="tela-poupanca" style="display:none;">
+            <div class="header">
+                <button class="btn-outline" onclick="mostrarTela('tela-home')">←</button>
+                <h1>🎯 Savings</h1>
+                <button class="btn btn-pequeno" onclick="addMetaM8()">+ New</button>
+            </div>
+
+            <div class="card">
+                <div class="grid-3 text-center">
+                    <div><span style="color:var(--texto-cinza);">Goals</span><br><strong id="total-metas">0</strong></div>
+                    <div><span style="color:var(--texto-cinza);">Total Target</span><br><strong id="target-total">€ 0</strong></div>
+                    <div><span style="color:var(--texto-cinza);">Saved</span><br><strong id="poupado-total">€ 0</strong></div>
+                </div>
+            </div>
+
+            <div id="lista-metas-m8"></div>
+        </div>
+
+        <!-- ============================================================
+        SIMULATION SCREEN (M9)
+        ============================================================ -->
+        <div id="tela-simulacao" style="display:none;">
+            <div class="header">
+                <button class="btn-outline" onclick="mostrarTela('tela-home')">←</button>
+                <h1>🔮 Simulation</h1>
+            </div>
+
+            <div class="card">
+                <h3>📊 Base Data</h3>
+                <label>Monthly Income (€)</label>
+                <input type="number" id="sim-receita" placeholder="1200" value="1200">
+                <label>Monthly Expenses (€)</label>
+                <input type="number" id="sim-despesa" placeholder="950" value="950">
+                <label>Current Balance (€)</label>
+                <input type="number" id="sim-saldo" placeholder="850" value="850">
+                <button class="btn btn-ouro" onclick="executarSimulacao()">🔮 Simulate</button>
+            </div>
+
+            <div id="resultado-simulacao"></div>
+        </div>
+
+        <!-- ============================================================
+        CIRCULAR ECONOMY SCREEN (M10)
+        ============================================================ -->
+        <div id="tela-economia" style="display:none;">
+            <div class="header">
+                <button class="btn-outline" onclick="mostrarTela('tela-home')">←</button>
+                <h1>🔄 Circular Economy</h1>
+                <button class="btn btn-pequeno" onclick="addInvestimentoM10()">+ New</button>
+            </div>
+
+            <div class="card">
+                <div class="grid-3 text-center">
+                    <div><span style="color:var(--texto-cinza);">Investments</span><br><strong id="total-investimentos">0</strong></div>
+                    <div><span style="color:var(--texto-cinza);">Total Invested</span><br><strong id="total-investido">€ 0</strong></div>
+                    <div><span style="color:var(--texto-cinza);">Monthly Return</span><br><strong id="retorno-mensal-total">€ 0</strong></div>
+                </div>
+            </div>
+
+            <div id="lista-investimentos-m10"></div>
+        </div>
+
+        <!-- ============================================================
+        SETTINGS SCREEN (M11)
+        ============================================================ -->
+        <div id="tela-configuracoes" style="display:none;">
+            <div class="header">
+                <button class="btn-outline" onclick="mostrarTela('tela-home')">←</button>
+                <h1>⚙️ Settings</h1>
+            </div>
+
+            <!-- Profile -->
+            <div class="card">
+                <h3>👤 Profile</h3>
+                <label>Username</label>
+                <input type="text" id="config-nome" placeholder="admin">
+                <button class="btn btn-pequeno btn-ouro" onclick="atualizarNome()">Update Name</button>
+                <label class="mt-8">New Password</label>
+                <input type="password" id="config-nova-senha" placeholder="New password">
+                <label>Confirm Password</label>
+                <input type="password" id="config-confirmar-senha" placeholder="Confirm password">
+                <button class="btn btn-pequeno btn-ouro" onclick="atualizarSenha()">Update Password</button>
+            </div>
+
+            <!-- Themes -->
+            <div class="card">
+                <h3>🎨 Design</h3>
+                <div class="grid-2">
+                    <button class="btn btn-verde" onclick="selecionarTema('homem')">👤 Man</button>
+                    <button class="btn btn-roxo" onclick="selecionarTema('mulher')">👩 Woman</button>
+                </div>
+                <p style="color:var(--texto-cinza); font-size:12px; margin-top:8px;">Current theme: <strong id="tema-atual-label">Man</strong></p>
+            </div>
+
+            <!-- Currency -->
+            <div class="card">
+                <h3>💱 Exchange</h3>
+                <label>Base Currency: 💶 Euro (EUR)</label>
+                <label>USD (1 EUR = )</label>
+                <input type="number" id="cambio-usd" value="1.0800" step="0.0001">
+                <label>GBP (1 EUR = )</label>
+                <input type="number" id="cambio-gbp" value="0.8500" step="0.0001">
+                <button class="btn btn-pequeno btn-ouro" onclick="atualizarCambio()">Update Rates</button>
+            </div>
+
+            <!-- Backup -->
+            <div class="card">
+                <h3>💾 Backup</h3>
+                <button class="btn btn-azul" onclick="fazerBackup()">📤 Download Backup</button>
+                <label class="mt-8">Restore Backup</label>
+                <input type="file" id="arquivo-restore" accept=".json">
+                <button class="btn btn-ouro" onclick="fazerRestore()">📥 Restore</button>
+            </div>
+
+            <!-- Information -->
+            <div class="card">
+                <h3>📱 Information</h3>
+                <p style="color:var(--texto-cinza); font-size:14px;">📌 FinançPessoal v3.0</p>
+                <p style="color:var(--texto-cinza); font-size:14px;">📅 Last update: July 2026</p>
+                <p style="color:var(--texto-cinza); font-size:14px;">🧑‍💻 Made with ❤️</p>
+            </div>
+        </div>
+
+        <!-- ============================================================
+        NOTES CENTER SCREEN (M12)
+        ============================================================ -->
+        <div id="tela-anotacoes" style="display:none;">
+            <div class="header">
+                <button class="btn-outline" onclick="mostrarTela('tela-home')">←</button>
+                <h1>📝 Notes Center</h1>
+                <button class="btn btn-pequeno" onclick="abrirModalAnotacao('Geral')">+ New</button>
+            </div>
+
+            <div class="card">
+                <div class="flex" style="gap:8px; flex-wrap:wrap;">
+                    <select id="filtro-modulo-anotacao" onchange="carregarAnotacoes()" style="flex:1; min-width:120px; margin:0;">
+                        <option value="todos">All Modules</option>
+                        <option value="M2">M2 - Transactions</option>
+                        <option value="M4">M4 - Amortization</option>
+                        <option value="M5">M5 - Life & Work</option>
+                        <option value="M6">M6 - Projects</option>
+                        <option value="M8">M8 - Savings</option>
+                        <option value="M10">M10 - Circular Economy</option>
+                        <option value="Geral">General</option>
+                    </select>
+                    <select id="filtro-prioridade-anotacao" onchange="carregarAnotacoes()" style="flex:1; min-width:120px; margin:0;">
+                        <option value="todas">All Priorities</option>
+                        <option value="⚡">⚡ Lightning</option>
+                        <option value="🔴">🔴 Immediate</option>
+                        <option value="🟡">🟡 Urgent</option>
+                        <option value="🟢">🟢 Routine</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="lista-anotacoes"></div>
+        </div>
+
+        <!-- ============================================================
+        HELP SCREEN (M13)
+        ============================================================ -->
+        <div id="tela-ajuda" style="display:none;">
+            <div class="header">
+                <button class="btn-outline" onclick="mostrarTela('tela-home')">←</button>
+                <h1>🆘 Help</h1>
+            </div>
+
+            <div class="card">
+                <h3>❓ FAQ</h3>
+                <div class="linha" onclick="toggleFaq(this)" style="cursor:pointer;">
+                    <span>🔽 How do I log in for the first time?</span>
+                    <span style="color:var(--ouro);">▼</span>
+                </div>
+                <div style="display:none; padding:8px 0; color:var(--texto-cinza); font-size:14px;">
+                    Initial credentials: <strong style="color:var(--ouro);">admin / pass1234</strong><br>
+                    Change on first use in Settings (M11)
+                </div>
+
+                <div class="linha" onclick="toggleFaq(this)" style="cursor:pointer;">
+                    <span>🔽 How do I add a category?</span>
+                    <span style="color:var(--ouro);">▼</span>
+                </div>
+                <div style="display:none; padding:8px 0; color:var(--texto-cinza); font-size:14px;">
+                    In M2 - Transactions, click "+ New Category"
+                </div>
+
+                <div class="linha" onclick="toggleFaq(this)" style="cursor:pointer;">
+                    <span>🔽 How do I export a PDF report?</span>
+                    <span style="color:var(--ouro);">▼</span>
+                </div>
+                <div style="display:none; padding:8px 0; color:var(--texto-cinza); font-size:14px;">
+                    In M3 - Dashboard, click "Export PDF"
+                </div>
+
+                <div class="linha" onclick="toggleFaq(this)" style="cursor:pointer;">
+                    <span>🔽 How does the integration with M2 work?</span>
+                    <span style="color:var(--ouro);">▼</span>
+                </div>
+                <div style="display:none; padding:8px 0; color:var(--texto-cinza); font-size:14px;">
+                    M5, M6 and M10 have special categories that require confirmation
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>💡 Quick Tips</h3>
+                <div style="color:var(--texto-cinza); font-size:14px; line-height:1.8;">
+                    💡 Use the <span style="color:var(--ouro);">+</span> button for quick transactions<br>
+                    💡 Global notes with priorities in M12<br>
+                    💡 Backup your data regularly in M11<br>
+                    💡 Customize the theme in Settings
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>⌨️ Shortcuts</h3>
+                <div style="color:var(--texto-cinza); font-size:13px; line-height:2;">
+                    <span style="color:var(--ouro);">Ctrl+2</span> Transactions &nbsp;|&nbsp;
+                    <span style="color:var(--ouro);">Ctrl+5</span> Life & Work<br>
+                    <span style="color:var(--ouro);">Ctrl+6</span> Projects &nbsp;|&nbsp;
+                    <span style="color:var(--ouro);">Ctrl+8</span> Savings<br>
+                    <span style="color:var(--ouro);">Ctrl+N</span> New Note &nbsp;|&nbsp;
+                    <span style="color:var(--ouro);">Ctrl+S</span> Save
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>📱 Information</h3>
+                <p style="color:var(--texto-cinza); font-size:14px;">📌 FinançPessoal v3.0</p>
+                <p style="color:var(--texto-cinza); font-size:14px;">📅 July 2026</p>
+                <p style="color:var(--texto-cinza); font-size:14px;">🧑‍💻 Made with ❤️</p>
+            </div>
+        </div>
+
+        <!-- ============================================================
+        FIXED MENU - COMPLETE (13 MODULES)
+        ============================================================ -->
+        <div class="menu">
+            <button class="ativo" onclick="mostrarTela('tela-home')">
+                <span class="menu-icon">🏠</span>Home
+            </button>
+            <button onclick="mostrarTela('tela-lancar')">
+                <span class="menu-icon">💰</span>M2
+            </button>
+            <button onclick="mostrarTela('tela-dashboard')">
+                <span class="menu-icon">📊</span>M3
+            </button>
+            <button onclick="mostrarTela('tela-amortizacoes')">
+                <span class="menu-icon">🏦</span>M4
+            </button>
+            <button onclick="mostrarTela('tela-vida-trabalho')">
+                <span class="menu-icon">👥</span>M5
+            </button>
+            <button onclick="mostrarTela('tela-projetos')">
+                <span class="menu-icon">🚀</span>M6
+            </button>
+            <button onclick="mostrarTela('tela-contas')">
+                <span class="menu-icon">🏦</span>M7
+            </button>
+            <button onclick="mostrarTela('tela-poupanca')">
+                <span class="menu-icon">🎯</span>M8
+            </button>
+            <button onclick="mostrarTela('tela-simulacao')">
+                <span class="menu-icon">🔮</span>M9
+            </button>
+            <button onclick="mostrarTela('tela-economia')">
+                <span class="menu-icon">🔄</span>M10
+            </button>
+            <button onclick="mostrarTela('tela-configuracoes')">
+                <span class="menu-icon">⚙️</span>M11
+            </button>
+            <button onclick="mostrarTela('tela-anotacoes')">
+                <span class="menu-icon">📝</span>M12
+            </button>
+            <button onclick="mostrarTela('tela-ajuda')">
+                <span class="menu-icon">🆘</span>M13
+            </button>
+        </div>
+
+        <!-- ============================================================
+        QUICK ENTRY FAB
+        ============================================================ -->
+        <div class="fab-container" id="fabContainer">
+            <div class="fab-label" id="fabLabel">Expense</div>
+            <button class="fab fab-despesa" id="fabButton" onclick="quickEntryFab()">
+                <span id="fabIcon">−</span>
+            </button>
+        </div>
+
+        <!-- ============================================================
+        CATEGORY MODAL
+        ============================================================ -->
+        <div id="modal-categoria" class="modal">
+            <div class="modal-content">
+                <h2>➕ New Category</h2>
+                <label>Type</label>
+                <select id="modal-categoria-tipo">
+                    <option>Expense</option>
+                    <option>Income</option>
+                </select>
+                <label>Name</label>
+                <input type="text" id="modal-categoria-nome" placeholder="Ex: Leisure">
+                <label>Icon</label>
+                <input type="text" id="modal-categoria-icone" placeholder="Ex: 🎮" value="📦">
+                <label>Color</label>
+                <input type="color" id="modal-categoria-cor" value="#6C757D">
+                <button class="btn btn-verde mt-8" onclick="adicionarCategoria()">Add</button>
+                <button class="btn-outline mt-8" onclick="fecharModalCategoria()">Cancel</button>
+            </div>
+        </div>
+
+        <!-- ============================================================
+        NOTE MODAL
+        ============================================================ -->
+        <div id="modal-anotacao" class="modal">
+            <div class="modal-content">
+                <h2>📝 New Note</h2>
+                <label>Module</label>
+                <select id="modal-anotacao-modulo">
+                    <option value="M2">M2 - Transactions</option>
+                    <option value="M4">M4 - Amortization</option>
+                    <option value="M5">M5 - Life & Work</option>
+                    <option value="M6">M6 - Projects</option>
+                    <option value="M8">M8 - Savings</option>
+                    <option value="M10">M10 - Circular Economy</option>
+                    <option value="Geral">General</option>
+                </select>
+                <label>Title</label>
+                <input type="text" id="modal-anotacao-titulo" placeholder="Note title">
+                <label>⚡ Priority</label>
+                <select id="modal-anotacao-prioridade">
+                    <option value="⚡">⚡ Lightning (Emergency)</option>
+                    <option value="🔴">🔴 Immediate (High)</option>
+                    <option value="🟡">🟡 Urgent (Medium)</option>
+                    <option value="🟢" selected>🟢 Routine (Low)</option>
+                </select>
+                <label>Description</label>
+                <textarea id="modal-anotacao-texto" rows="4" placeholder="Write your note..."></textarea>
+                <button class="btn btn-verde mt-8" onclick="salvarAnotacao()">Save</button>
+                <button class="btn-outline mt-8" onclick="fecharModalAnotacao()">Cancel</button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ================================================================
+    JAVASCRIPT - COMPLETE
+    ================================================================ -->
+    <script>
+        // ================================================================
+        // CONSTANTS AND CONFIGURATIONS
+        // ================================================================
+
+        const MOEDA = '€';
+        const VERSAO = 'v3.0';
+
+        // ================================================================
+        // INITIAL DATA
+        // ================================================================
+
+        let admins = JSON.parse(localStorage.getItem('admins')) || [{ usuario: 'admin', senha: 'pass1234' }];
+        let usuarioLogado = null;
+        let primeiroAcesso = !localStorage.getItem('credenciais_alteradas');
+
+        let lancamentos = JSON.parse(localStorage.getItem('lancamentos')) || [];
+        let lancamentosFrequentes = JSON.parse(localStorage.getItem('lancamentosFrequentes')) || [];
+        let categorias = JSON.parse(localStorage.getItem('categorias')) || {
+            Income: [
+                { nome: 'Salary', icone: '💼', cor: '#2A9D8F' },
+                { nome: 'Freelance', icone: '💻', cor: '#E9C46A' },
+                { nome: 'Investments', icone: '📈', cor: '#38B000' },
+                { nome: 'Circular Economy', icone: '🔄', cor: '#D4A574' },
+                { nome: 'Others', icone: '📦', cor: '#6C757D' }
+            ],
+            Expense: [
+                { nome: 'Food', icone: '🍽️', cor: '#FF8A8A' },
+                { nome: 'Transport', icone: '🚗', cor: '#74B9FF' },
+                { nome: 'Housing', icone: '🏠', cor: '#95E1D3' },
+                { nome: 'Health', icone: '🩺', cor: '#F9A8D4' },
+                { nome: 'Clothing', icone: '👕', cor: '#AA96DA' },
+                { nome: 'Education', icone: '📚', cor: '#FCBF49' },
+                { nome: 'Leisure', icone: '🎮', cor: '#A8DADC' },
+                { nome: 'Finance', icone: '💰', cor: '#E63946' },
+                { nome: 'M5 - Family', icone: '👨‍👩‍👧', cor: '#D4A574' },
+                { nome: 'M5 - Work', icone: '💼', cor: '#D4A574' },
+                { nome: 'M6 - Projects', icone: '🚀', cor: '#D4A574' },
+                { nome: 'Others', icone: '📦', cor: '#6C757D' }
+            ]
+        };
+
+        let contasBancarias = JSON.parse(localStorage.getItem('contasBancarias')) || [];
+        let emprestimos = JSON.parse(localStorage.getItem('emprestimos')) || [];
+        let eventosM5 = JSON.parse(localStorage.getItem('eventosM5')) || { familia: [], prof: [] };
+        let membrosM5 = JSON.parse(localStorage.getItem('membrosM5')) || { familia: [], prof: [] };
+        let projetosM6 = JSON.parse(localStorage.getItem('projetosM6')) || [];
+        let metasM8 = JSON.parse(localStorage.getItem('metasM8')) || [];
+        let investimentosM10 = JSON.parse(localStorage.getItem('investimentosM10')) || [];
+        let anotacoes = JSON.parse(localStorage.getItem('anotacoes')) || [];
+        let cotacoes = JSON.parse(localStorage.getItem('cotacoes')) || { usd: 1.0800, gbp: 0.8500 };
+
+        let temaAtual = localStorage.getItem('tema') || 'homem';
+        let fabTipo = 'despesa';
+
+        // ================================================================
+        // GLOBAL CHART
+        // ================================================================
+        let graficoPizza = null;
+
+        // ================================================================
+        // INITIALIZATION
+        // ================================================================
+
+        window.onload = function() {
+            const usuarioSalvo = localStorage.getItem('usuarioLogado');
+            if (usuarioSalvo && admins.find(a => a.usuario === usuarioSalvo)) {
+                usuarioLogado = usuarioSalvo;
+                document.getElementById('tela-login').style.display = 'none';
+                mostrarTela('tela-home');
+                carregarDados();
+            } else {
+                document.getElementById('tela-login').style.display = 'block';
+                carregarListaAdmins();
+            }
+
+            carregarLogo();
+            aplicarTema();
+            carregarSelecaoCategorias();
+
+            window.onclick = function(event) {
+                const modais = ['modal-categoria', 'modal-anotacao'];
+                modais.forEach(id => {
+                    const modal = document.getElementById(id);
+                    if (event.target === modal) modal.style.display = 'none';
+                });
+            };
+
+            atualizarCategorias();
+            carregarContasDropdown();
+        };
+
+        // ================================================================
+        // NAVIGATION (13 MODULES)
+        // ================================================================
+
+        function mostrarTela(id) {
+            if (!usuarioLogado && id !== 'tela-login' && id !== 'tela-admin') {
+                document.getElementById('tela-login').style.display = 'block';
+                return;
+            }
+
+            document.querySelectorAll('#app > div[id^="tela-"]').forEach(t => t.style.display = 'none');
+            document.getElementById(id).style.display = 'block';
+
+            document.querySelectorAll('.menu button').forEach(b => b.className = '');
+            const menuMap = {
+                'tela-home': 0,
+                'tela-lancar': 1,
+                'tela-dashboard': 2,
+                'tela-amortizacoes': 3,
+                'tela-vida-trabalho': 4,
+                'tela-projetos': 5,
+                'tela-contas': 6,
+                'tela-poupanca': 7,
+                'tela-simulacao': 8,
+                'tela-economia': 9,
+                'tela-configuracoes': 10,
+                'tela-anotacoes': 11,
+                'tela-ajuda': 12
+            };
+            const idx = menuMap[id];
+            if (idx !== undefined) {
+                const btns = document.querySelectorAll('.menu button');
+                if (btns[idx]) btns[idx].className = 'ativo';
+            }
+
+            switch (id) {
+                case 'tela-home':
+                    calcularSaldos();
+                    carregarAlertas();
+                    carregarAnotacoesRecentes();
+                    break;
+                case 'tela-lancar':
+                    atualizarCategorias();
+                    carregarUltimosLancamentos();
+                    carregarFrequentes();
+                    carregarContasDropdown();
+                    break;
+                case 'tela-dashboard':
+                    carregarDashboard();
+                    break;
+                case 'tela-amortizacoes':
+                    carregarEmprestimos();
+                    break;
+                case 'tela-vida-trabalho':
+                    carregarM5();
+                    break;
+                case 'tela-projetos':
+                    carregarM6();
+                    break;
+                case 'tela-contas':
+                    carregarContas();
+                    break;
+                case 'tela-poupanca':
+                    carregarMetas();
+                    break;
+                case 'tela-economia':
+                    carregarInvestimentos();
+                    break;
+                case 'tela-anotacoes':
+                    carregarAnotacoes();
+                    break;
+                case 'tela-configuracoes':
+                    carregarConfiguracoes();
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        // ================================================================
+        // THEME
+        // ================================================================
+
+        function alternarTema() {
+            temaAtual = temaAtual === 'homem' ? 'mulher' : 'homem';
+            localStorage.setItem('tema', temaAtual);
+            aplicarTema();
+            if (document.getElementById('tela-dashboard').style.display !== 'none') {
+                carregarDashboard();
+            }
+        }
+
+        function aplicarTema() {
+            const el = document.documentElement;
+            if (temaAtual === 'mulher') {
+                el.setAttribute('data-tema', 'mulher');
+                document.getElementById('iconeTema').textContent = '👩';
+                document.getElementById('textoTema').textContent = 'Woman';
+                document.getElementById('tema-atual-label').textContent = 'Woman';
+            } else {
+                el.removeAttribute('data-tema');
+                document.getElementById('iconeTema').textContent = '👤';
+                document.getElementById('textoTema').textContent = 'Man';
+                document.getElementById('tema-atual-label').textContent = 'Man';
+            }
+        }
+
+        function selecionarTema(tema) {
+            temaAtual = tema;
+            localStorage.setItem('tema', tema);
+            aplicarTema();
+            alert('✅ Theme changed to ' + (tema === 'homem' ? 'Man' : 'Woman'));
+            if (document.getElementById('tela-dashboard').style.display !== 'none') {
+                carregarDashboard();
+            }
+        }
+
+        // ================================================================
+        // LOGO
+        // ================================================================
+
+        function uploadLogo(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = document.getElementById('logoPreview');
+                const placeholder = document.getElementById('logoPlaceholder');
+                img.src = e.target.result;
+                img.style.display = 'block';
+                placeholder.style.display = 'none';
+                localStorage.setItem('logoPersonalizado', e.target.result);
+                alert('✅ Logo updated!');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function carregarLogo() {
+            const logo = localStorage.getItem('logoPersonalizado');
+            if (logo) {
+                const img = document.getElementById('logoPreview');
+                const placeholder = document.getElementById('logoPlaceholder');
+                img.src = logo;
+                img.style.display = 'block';
+                placeholder.style.display = 'none';
+            }
+        }
+
+        // ================================================================
+        // LOGIN (M1)
+        // ================================================================
+
+        function fazerLogin() {
+            const usuario = document.getElementById('login-usuario').value.trim();
+            const senha = document.getElementById('login-senha').value.trim();
+
+            const admin = admins.find(a => a.usuario === usuario && a.senha === senha);
+
+            if (admin) {
+                usuarioLogado = usuario;
+                localStorage.setItem('usuarioLogado', usuario);
+
+                if (primeiroAcesso) {
+                    alert('🔐 First access! Please change your credentials in Settings.');
+                    document.getElementById('tela-login').style.display = 'none';
+                    mostrarTela('tela-home');
+                    carregarDados();
+                    setTimeout(() => mostrarTela('tela-configuracoes'), 500);
+                } else {
+                    document.getElementById('tela-login').style.display = 'none';
+                    mostrarTela('tela-home');
+                    carregarDados();
+                }
+            } else {
+                alert('❌ Incorrect username or password!');
+            }
+        }
+
+        function fazerLogout() {
+            usuarioLogado = null;
+            localStorage.removeItem('usuarioLogado');
+            document.getElementById('tela-home').style.display = 'none';
+            document.getElementById('tela-login').style.display = 'block';
+            document.getElementById('login-usuario').value = '';
+            document.getElementById('login-senha').value = '';
+        }
+
+        function adicionarAdmin() {
+            const usuario = document.getElementById('novo-admin-usuario').value.trim();
+            const senha = document.getElementById('novo-admin-senha').value.trim();
+
+            if (!usuario || !senha) return alert('Please fill in username and password!');
+            if (admins.find(a => a.usuario === usuario)) return alert('User already exists!');
+
+            admins.push({ usuario, senha });
+            localStorage.setItem('admins', JSON.stringify(admins));
+            document.getElementById('novo-admin-usuario').value = '';
+            document.getElementById('novo-admin-senha').value = '';
+            carregarListaAdmins();
+            alert('✅ Admin added!');
+        }
+
+        function removerAdmin(usuario) {
+            if (usuario === 'admin') return alert('❌ Cannot remove the main admin!');
+            if (!confirm(`Remove "${usuario}"?`)) return;
+            admins = admins.filter(a => a.usuario !== usuario);
+            localStorage.setItem('admins', JSON.stringify(admins));
+            carregarListaAdmins();
+        }
+
+        function carregarListaAdmins() {
+            const container = document.getElementById('lista-admins');
+            container.innerHTML = admins.map(a =>
+                `<div class="linha">
+                    <span>👤 ${a.usuario} ${a.usuario === 'admin' ? '⭐' : ''}</span>
+                    ${a.usuario !== 'admin' ? `<button class="btn-outline btn-pequeno" onclick="removerAdmin('${a.usuario}')">🗑️</button>` : ''}
+                </div>`
+            ).join('');
+        }
+
+        function atualizarNome() {
+            const nome = document.getElementById('config-nome').value.trim();
+            if (!nome) return alert('Please enter a name!');
+            const admin = admins.find(a => a.usuario === usuarioLogado);
+            if (admin) {
+                admin.usuario = nome;
+                localStorage.setItem('admins', JSON.stringify(admins));
+                usuarioLogado = nome;
+                localStorage.setItem('usuarioLogado', nome);
+                alert('✅ Name updated!');
+            }
+        }
+
+        function atualizarSenha() {
+            const nova = document.getElementById('config-nova-senha').value.trim();
+            const confirmar = document.getElementById('config-confirmar-senha').value.trim();
+
+            if (!nova || nova.length < 4) return alert('Password must be at least 4 characters!');
+            if (nova !== confirmar) return alert('Passwords do not match!');
+
+            const admin = admins.find(a => a.usuario === usuarioLogado);
+            if (admin) {
+                admin.senha = nova;
+                localStorage.setItem('admins', JSON.stringify(admins));
+                localStorage.setItem('credenciais_alteradas', 'true');
+                primeiroAcesso = false;
+                alert('✅ Password updated!');
+                document.getElementById('config-nova-senha').value = '';
+                document.getElementById('config-confirmar-senha').value = '';
+            }
+        }
+
+        // ================================================================
+        // CATEGORIES (M2)
+        // ================================================================
+
+        function atualizarCategorias() {
+            const tipo = document.getElementById('tipo').value;
+            const select = document.getElementById('categoria');
+            select.innerHTML = '';
+            categorias[tipo].forEach(cat => {
+                const option = document.createElement('option');
+                option.value = cat.nome;
+                option.textContent = `${cat.icone} ${cat.nome}`;
+                select.appendChild(option);
+            });
+        }
+
+        function abrirModalCategoria() {
+            document.getElementById('modal-categoria').style.display = 'flex';
+            document.getElementById('modal-categoria-tipo').value = document.getElementById('tipo').value;
+        }
+
+        function fecharModalCategoria() {
+            document.getElementById('modal-categoria').style.display = 'none';
+            document.getElementById('modal-categoria-nome').value = '';
+        }
+
+        function adicionarCategoria() {
+            const tipo = document.getElementById('modal-categoria-tipo').value;
+            const nome = document.getElementById('modal-categoria-nome').value.trim();
+            const icone = document.getElementById('modal-categoria-icone').value || '📦';
+            const cor = document.getElementById('modal-categoria-cor').value || '#6C757D';
+
+            if (!nome) return alert('Please enter a name!');
+            if (categorias[tipo].find(c => c.nome === nome)) return alert('Category already exists!');
+
+            categorias[tipo].push({ nome, icone, cor });
+            localStorage.setItem('categorias', JSON.stringify(categorias));
+            fecharModalCategoria();
+            atualizarCategorias();
+            carregarListaCategorias();
+            carregarSelecaoCategorias();
+            alert('✅ Category added!');
+        }
+
+        function removerCategoria(tipo, nome) {
+            if (!confirm(`Remove "${nome}"?`)) return;
+            categorias[tipo] = categorias[tipo].filter(c => c.nome !== nome);
+            localStorage.setItem('categorias', JSON.stringify(categorias));
+            atualizarCategorias();
+            carregarListaCategorias();
+            carregarSelecaoCategorias();
+        }
+
+        function carregarListaCategorias() {
+            const container = document.getElementById('lista-categorias');
+            let html = '<h3 style="margin-top:16px;">📂 Categories</h3>';
+            for (const tipo of ['Income', 'Expense']) {
+                html += `<div style="margin:8px 0;"><strong>${tipo}:</strong>`;
+                categorias[tipo].forEach(cat => {
+                    html += `<div class="linha" style="padding:6px 0;">
+                        <span>${cat.icone} ${cat.nome} <span style="background:${cat.cor}; padding:2px 8px; border-radius:4px; font-size:10px; color:#fff;">${cat.cor}</span></span>
+                        <button class="btn-outline btn-pequeno" onclick="removerCategoria('${tipo}', '${cat.nome}')">🗑️</button>
+                    </div>`;
+                });
+                html += '</div>';
+            }
+            container.innerHTML = html;
+        }
+
+        // ================================================================
+        // TRANSACTIONS (M2)
+        // ================================================================
+
+        function guardarLancamento() {
+            const valor = parseFloat(document.getElementById('valor').value);
+            const tipo = document.getElementById('tipo').value;
+            const categoriaNome = document.getElementById('categoria').value;
+            const descricao = document.getElementById('descricao').value.trim() || 'No description';
+            const conta = document.getElementById('conta-lancamento').value;
+            const frequente = document.getElementById('lancamento-frequente').checked;
+
+            if (!valor || valor <= 0) return alert('Please enter a valid amount!');
+
+            const categoria = categorias[tipo].find(c => c.nome === categoriaNome);
+
+            const categoriasEspeciais = ['M5 - Family', 'M5 - Work', 'M6 - Projects', 'Circular Economy'];
+            const requerConfirmacao = categoriasEspeciais.includes(categoriaNome);
+
+            const lancamento = {
+                id: Date.now(),
+                valor,
+                tipo,
+                categoria: categoria || { nome: categoriaNome, icone: '📦', cor: '#6C757D' },
+                descricao,
+                conta,
+                data: new Date().toISOString(),
+                confirmado: !requerConfirmacao,
+                origem: requerConfirmacao ? categoriaNome : null,
+                dataConfirmacao: requerConfirmacao ? null : new Date().toISOString(),
+                frequente: frequente
+            };
+
+            lancamentos.unshift(lancamento);
+            localStorage.setItem('lancamentos', JSON.stringify(lancamentos));
+
+            if (frequente) {
+                const existe = lancamentosFrequentes.find(f =>
+                    f.tipo === tipo &&
+                    f.categoria.nome === categoriaNome &&
+                    f.descricao === descricao
+                );
+                if (!existe) {
+                    lancamentosFrequentes.push({
+                        id: Date.now(),
+                        tipo,
+                        categoria: categoria || { nome: categoriaNome, icone: '📦', cor: '#6C757D' },
+                        descricao,
+                        valor,
+                        frequente: true,
+                        dataCriacao: new Date().toISOString()
+                    });
+                    localStorage.setItem('lancamentosFrequentes', JSON.stringify(lancamentosFrequentes));
+                }
+            }
+
+            if (requerConfirmacao) {
+                const prioridade = categoriaNome.includes('Family') || categoriaNome.includes('Work') ? '🟡' : '🔴';
+                anotacoes.unshift({
+                    id: Date.now() + 1,
+                    modulo: 'M2',
+                    titulo: `New transaction awaiting confirmation: ${categoriaNome}`,
+                    texto: `${descricao} - ${MOEDA} ${valor.toFixed(2)}`,
+                    prioridade: prioridade,
+                    data: new Date().toISOString(),
+                    vinculado: `Transaction #${lancamento.id}`
+                });
+                localStorage.setItem('anotacoes', JSON.stringify(anotacoes));
+            }
+
+            alert('✅ Transaction saved' + (requerConfirmacao ? ' - Awaiting confirmation!' : '') + (frequente ?
+                ' 🔁 Marked as recurring!' : ''));
+            document.getElementById('valor').value = '';
+            document.getElementById('descricao').value = '';
+            document.getElementById('lancamento-frequente').checked = false;
+
+            carregarDados();
+            carregarFrequentes();
+            mostrarTela('tela-home');
+        }
+
+        function carregarUltimosLancamentos() {
+            const container = document.getElementById('ultimos-lancamentos');
+            const ultimos = lancamentos.slice(0, 15);
+
+            if (!ultimos.length) {
+                container.innerHTML = '<div style="color:var(--texto-cinza);">No transactions</div>';
+                return;
+            }
+
+            container.innerHTML = ultimos.map(l =>
+                `<div class="linha" style="font-size:13px; flex-wrap:wrap; gap:4px;">
+                    <div style="display:flex; align-items:center; gap:6px; flex:1; min-width:100px;">
+                        <span>${l.categoria.icone}</span>
+                        <span>${l.categoria.nome}</span>
+                        ${l.frequente ? '<span style="font-size:10px; color:var(--ouro);">🔁</span>' : ''}
+                    </div>
+                    <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+                        <span class="${l.tipo === 'Income' ? 'positivo' : 'negativo'}" style="font-weight:600;">
+                            ${l.tipo === 'Income' ? '+' : '-'} ${MOEDA} ${l.valor.toFixed(2)}
+                        </span>
+                        <span style="font-size:10px; color:var(--texto-cinza);">${new Date(l.data).toLocaleDateString('en-US')}</span>
+                        ${l.confirmado ? '✅' : '⏳'}
+                        <button class="btn-outline btn-pequeno" onclick="editarLancamento(${l.id})" title="Edit" style="padding:2px 6px; font-size:10px;">✏️</button>
+                        <button class="btn-outline btn-pequeno" onclick="eliminarLancamento(${l.id})" title="Delete" style="padding:2px 6px; font-size:10px;">🗑️</button>
+                    </div>
+                </div>`
+            ).join('');
+        }
+
+        function editarLancamento(id) {
+            const lancamento = lancamentos.find(l => l.id === id);
+            if (!lancamento) return;
+
+            const novoValor = parseFloat(prompt(`Edit amount (${MOEDA}):`, lancamento.valor));
+            if (isNaN(novoValor) || novoValor < 0) return;
+
+            const novaDescricao = prompt('Edit description:', lancamento.descricao);
+            if (novaDescricao === null) return;
+
+            lancamento.valor = novoValor;
+            lancamento.descricao = novaDescricao || lancamento.descricao;
+
+            localStorage.setItem('lancamentos', JSON.stringify(lancamentos));
+            carregarUltimosLancamentos();
+            calcularSaldos();
+            alert('✅ Transaction updated!');
+        }
+
+        function eliminarLancamento(id) {
+            if (!confirm('Delete this transaction?')) return;
+            lancamentos = lancamentos.filter(l => l.id !== id);
+            localStorage.setItem('lancamentos', JSON.stringify(lancamentos));
+            carregarUltimosLancamentos();
+            calcularSaldos();
+            alert('🗑️ Transaction deleted!');
+        }
+
+        // ================================================================
+        // RECURRING TRANSACTIONS
+        // ================================================================
+
+        function carregarFrequentes() {
+            const container = document.getElementById('lancamentos-frequentes');
+
+            if (!lancamentosFrequentes.length) {
+                container.innerHTML = '<div style="color:var(--texto-cinza); font-size:13px;">No recurring transactions</div>';
+                return;
+            }
+
+            container.innerHTML = lancamentosFrequentes.map(f =>
+                `<div class="linha" style="padding:8px 0; flex-wrap:wrap; gap:4px;">
+                    <div style="display:flex; align-items:center; gap:8px; flex:1; min-width:120px;">
+                        <span>${f.categoria.icone}</span>
+                        <span style="font-weight:500;">${f.categoria.nome}</span>
+                        <span style="font-size:12px; color:var(--texto-cinza);">${f.descricao}</span>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+                        <span style="font-size:12px; color:var(--texto-cinza);">${f.tipo === 'Income' ? '+' : '-'}</span>
+                        <span class="${f.tipo === 'Income' ? 'positivo' : 'negativo'}" style="font-weight:600;">${MOEDA} ${(f.valor || 0).toFixed(2)}</span>
+                        <button class="btn-outline btn-pequeno" onclick="editarFrequente(${f.id})" title="Edit">✏️</button>
+                        <button class="btn-outline btn-pequeno" onclick="removerFrequente(${f.id})" title="Remove">🗑️</button>
+                        <button class="btn-outline btn-pequeno" onclick="usarFrequente(${f.id})" title="Use" style="border-color:var(--ouro); color:var(--ouro);">📋 Use</button>
+                    </div>
+                </div>`
+            ).join('');
+        }
+
+        function usarFrequente(id) {
+            const frequente = lancamentosFrequentes.find(f => f.id === id);
+            if (!frequente) return;
+
+            document.getElementById('tipo').value = frequente.tipo;
+            atualizarCategorias();
+            document.getElementById('categoria').value = frequente.categoria.nome;
+            document.getElementById('descricao').value = frequente.descricao;
+            document.getElementById('valor').value = frequente.valor || '';
+            document.getElementById('lancamento-frequente').checked = true;
+
+            document.getElementById('valor').focus();
+            document.getElementById('valor').select();
+
+            alert('📋 Recurring transaction loaded! Adjust the amount if needed and click Save.');
+        }
+
+        function editarFrequente(id) {
+            const frequente = lancamentosFrequentes.find(f => f.id === id);
+            if (!frequente) return;
+
+            const novoValor = parseFloat(prompt(`Edit amount (${MOEDA}):`, frequente.valor || 0));
+            if (isNaN(novoValor) || novoValor < 0) return alert('Invalid amount!');
+
+            const novaDescricao = prompt('Edit description:', frequente.descricao);
+            if (novaDescricao === null) return;
+
+            const novoTipo = confirm('Change type? (Cancel keeps current)') ?
+                (confirm('Income? (OK) / Expense? (Cancel)') ? 'Income' : 'Expense') :
+                frequente.tipo;
+
+            frequente.valor = novoValor;
+            frequente.descricao = novaDescricao || frequente.descricao;
+            frequente.tipo = novoTipo;
+
+            localStorage.setItem('lancamentosFrequentes', JSON.stringify(lancamentosFrequentes));
+            carregarFrequentes();
+            alert('✅ Recurring transaction updated!');
+        }
+
+        function removerFrequente(id) {
+            if (!confirm('Remove this recurring transaction?')) return;
+            lancamentosFrequentes = lancamentosFrequentes.filter(f => f.id !== id);
+            localStorage.setItem('lancamentosFrequentes', JSON.stringify(lancamentosFrequentes));
+            carregarFrequentes();
+            alert('✅ Recurring transaction removed!');
+        }
+
+        function carregarContasDropdown() {
+            const select = document.getElementById('conta-lancamento');
+            select.innerHTML = '<option value="">Select account...</option>';
+            contasBancarias.forEach(c => {
+                select.innerHTML += `<option value="${c.nome}">🏦 ${c.nome} (${MOEDA} ${c.saldo.toFixed(2)})</option>`;
+            });
+        }
+
+        // ================================================================
+        // QUICK ENTRY FAB
+        // ================================================================
+
+        function quickEntryFab() {
+            if (fabTipo === 'despesa') {
+                fabTipo = 'receita';
+                document.getElementById('fabButton').className = 'fab fab-receita';
+                document.getElementById('fabIcon').textContent = '+';
+                document.getElementById('fabLabel').textContent = 'Income';
+                document.getElementById('tipo').value = 'Income';
+            } else {
+                fabTipo = 'despesa';
+                document.getElementById('fabButton').className = 'fab fab-despesa';
+                document.getElementById('fabIcon').textContent = '−';
+                document.getElementById('fabLabel').textContent = 'Expense';
+                document.getElementById('tipo').value = 'Expense';
+            }
+            mostrarTela('tela-lancar');
+            atualizarCategorias();
+        }
+
+        // ================================================================
+        // DASHBOARD (M3)
+        // ================================================================
+
+        function carregarDashboard() {
+            const mesAtual = new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+            document.getElementById('mes-atual').textContent = mesAtual;
+
+            const receitas = lancamentos.filter(l => l.tipo === 'Income' && l.confirmado).reduce((s, l) => s + l.valor, 0);
+            const despesas = lancamentos.filter(l => l.tipo === 'Expense' && l.confirmado).reduce((s, l) => s + l.valor, 0);
+
+            document.getElementById('total-receitas').textContent = `${MOEDA} ${receitas.toFixed(2)}`;
+            document.getElementById('total-despesas').textContent = `${MOEDA} ${despesas.toFixed(2)}`;
+
+            const ctx = document.getElementById('graficoPizza').getContext('2d');
+            if (graficoPizza) graficoPizza.destroy();
+
+            const cores = temaAtual === 'mulher' ?
+                ['#A78BFA', '#F9A8D4'] :
+                ['#6BCB77', '#FF8A8A'];
+
+            graficoPizza = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: ['Income', 'Expenses'],
+                    datasets: [{
+                        data: [receitas, despesas],
+                        backgroundColor: cores,
+                        borderColor: ['rgba(44,24,16,0.5)', 'rgba(44,24,16,0.5)'],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            labels: { color: '#F5F0EB' }
+                        }
+                    }
+                }
+            });
+
+            carregarListaCategorias();
+        }
+
+        // ================================================================
+        // PDF CATEGORY SELECTION
+        // ================================================================
+
+        function carregarSelecaoCategorias() {
+            const container = document.getElementById('selecao-categorias-pdf');
+            let html = '<p style="color:var(--texto-cinza); font-size:13px; margin-bottom:8px;">Select categories to include in the report:</p>';
+
+            const todasCategorias = [...categorias.Expense, ...categorias.Income];
+
+            todasCategorias.forEach(cat => {
+                html += `
+                    <div class="cat-pdf-item">
+                        <input type="checkbox" class="cat-pdf-checkbox" value="${cat.nome}" checked>
+                        <label>${cat.icone} ${cat.nome}</label>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function getCategoriasSelecionadas() {
+            const checkboxes = document.querySelectorAll('.cat-pdf-checkbox:checked');
+            return Array.from(checkboxes).map(el => el.value);
+        }
+
+        // ================================================================
+        // EXPORT PDF (M3)
+        // ================================================================
+
+        function exportarPDF() {
+            const el = document.getElementById('area-pdf');
+
+            const opt = {
+                margin: [10, 10, 10, 10],
+                filename: `report-${new Date().toISOString().split('T')[0]}.pdf`,
+                html2canvas: {
+                    scale: 2,
+                    useCORS: true,
+                    logging: false
+                },
+                jsPDF: {
+                    unit: 'mm',
+                    format: 'a4',
+                    orientation: 'portrait'
+                },
+                pagebreak: {
+                    mode: ['avoid-all', 'css', 'legacy']
+                }
+            };
+
+            html2pdf().set(opt).from(el).save();
+        }
+
+        function gerarPDFPersonalizado() {
+            const selecionadas = getCategoriasSelecionadas();
+
+            if (!selecionadas.length) {
+                alert('Select at least one category!');
+                return;
+            }
+
+            const dadosFiltrados = lancamentos.filter(l =>
+                selecionadas.includes(l.categoria.nome) && l.confirmado
+            );
+
+            if (!dadosFiltrados.length) {
+                alert('No transactions found for the selected categories!');
+                return;
+            }
+
+            const tempDiv = document.createElement('div');
+            tempDiv.style.padding = '20px';
+            tempDiv.style.background = '#2C1810';
+            tempDiv.style.color = '#F5F0EB';
+            tempDiv.style.fontFamily = 'system-ui, sans-serif';
+
+            const receitas = dadosFiltrados.filter(l => l.tipo === 'Income').reduce((s, l) => s + l.valor, 0);
+            const despesas = dadosFiltrados.filter(l => l.tipo === 'Expense').reduce((s, l) => s + l.valor, 0);
+
+            tempDiv.innerHTML = `
+                <h1 style="color:#D4A574;">📊 Custom Report</h1>
+                <p><strong>Date:</strong> ${new Date().toLocaleDateString('en-US')}</p>
+                <p><strong>Selected Categories:</strong> ${selecionadas.join(', ')}</p>
+                <hr style="border-color:#5C3D2E; margin:16px 0;">
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin:16px 0;">
+                    <div style="background:#3D2317; padding:16px; border-radius:12px;">
+                        <h3>Income</h3>
+                        <div style="font-size:28px; color:#6BCB77;">${MOEDA} ${receitas.toFixed(2)}</div>
+                    </div>
+                    <div style="background:#3D2317; padding:16px; border-radius:12px;">
+                        <h3>Expenses</h3>
+                        <div style="font-size:28px; color:#FF8A8A;">${MOEDA} ${despesas.toFixed(2)}</div>
+                    </div>
+                </div>
+                <div style="background:#3D2317; padding:16px; border-radius:12px; margin:16px 0;">
+                    <h3>Balance</h3>
+                    <div style="font-size:28px; color:#D4A574;">${MOEDA} ${(receitas - despesas).toFixed(2)}</div>
+                </div>
+                <hr style="border-color:#5C3D2E; margin:16px 0;">
+                <h3>📋 Transactions</h3>
+                <ul style="list-style:none; padding:0;">
+                    ${dadosFiltrados.slice(0, 20).map(l => `
+                        <li style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #5C3D2E;">
+                            <span>${new Date(l.data).toLocaleDateString('en-US')} - ${l.categoria.icone} ${l.categoria.nome}</span>
+                            <span style="${l.tipo === 'Income' ? 'color:#6BCB77;' : 'color:#FF8A8A;'}">${l.tipo === 'Income' ? '+' : '-'} ${MOEDA} ${l.valor.toFixed(2)}</span>
+                        </li>
+                    `).join('')}
+                </ul>
+                <p style="color:#C4B5A5; font-size:12px; margin-top:16px;">Generated by FinançPessoal v3.0</p>
+            `;
+
+            document.body.appendChild(tempDiv);
+
+            const opt = {
+                margin: [10, 10, 10, 10],
+                filename: `custom-report-${new Date().toISOString().split('T')[0]}.pdf`,
+                html2canvas: { scale: 2, useCORS: true, logging: false },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+                pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+            };
+
+            html2pdf().set(opt).from(tempDiv).save().then(() => {
+                document.body.removeChild(tempDiv);
+            });
+        }
+
+        // ================================================================
+        // LOANS / AMORTIZATION (M4)
+        // ================================================================
+
+        function addEmprestimo() {
+            const tipo = prompt('Type (Mortgage/Car/Personal/Credit Card/Student/Other):');
+            if (!tipo) return;
+            const banco = prompt('Financial Institution:');
+            if (!banco) return;
+            const total = parseFloat(prompt('Total Loan Amount (€):'));
+            if (!total) return;
+            const divida = parseFloat(prompt('Current Debt Amount (€):'));
+            if (!divida) return;
+            const parcela = parseFloat(prompt('Monthly Installment (€):'));
+            if (!parcela) return;
+            const taxa = parseFloat(prompt('Interest Rate (%):'));
+            if (!taxa) return;
+            const inicio = prompt('Start Date (YYYY-MM-DD):');
+            if (!inicio) return;
+            const prazo = parseInt(prompt('Total Term (months):'));
+            if (!prazo) return;
+
+            const icones = { 'Mortgage': '🏠', 'Car': '🚗', 'Personal': '💳', 'Credit Card': '💳', 'Student': '🎓',
+                'Other': '📦' };
+
+            const emprestimo = {
+                id: Date.now(),
+                tipo,
+                icone: icones[tipo] || '📦',
+                banco,
+                valorTotal: total,
+                dividaAtual: divida,
+                parcelaMensal: parcela,
+                taxa: taxa,
+                dataInicio: inicio,
+                prazoTotal: prazo,
+                amortizado: total - divida,
+                dataCriacao: new Date().toISOString()
+            };
+
+            emprestimos.push(emprestimo);
+            localStorage.setItem('emprestimos', JSON.stringify(emprestimos));
+            carregarEmprestimos();
+            alert('✅ Loan added!');
+        }
+
+        function carregarEmprestimos() {
+            const container = document.getElementById('lista-emprestimos');
+            if (!emprestimos.length) {
+                container.innerHTML = '<div class="card" style="text-align:center; color:var(--texto-cinza);">No loans</div>';
+                return;
+            }
+
+            const hoje = new Date();
+            let totalDivida = 0;
+            let totalParcela = 0;
+
+            emprestimos.forEach(e => {
+                totalDivida += e.dividaAtual;
+                totalParcela += e.parcelaMensal;
+            });
+
+            document.getElementById('total-emprestimos').textContent = emprestimos.length;
+            document.getElementById('saldo-devedor-total').textContent = `${MOEDA} ${totalDivida.toFixed(2)}`;
+            document.getElementById('parcela-total').textContent = `${MOEDA} ${totalParcela.toFixed(2)}`;
+
+            container.innerHTML = emprestimos.map(e => {
+                const mesesPagos = Math.floor((hoje - new Date(e.dataInicio)) / (1000 * 60 * 60 * 24 * 30));
+                const mesesRestantes = Math.max(0, e.prazoTotal - mesesPagos);
+                const progresso = Math.min(100, (e.amortizado / e.valorTotal) * 100);
+                const anosPagos = Math.floor(mesesPagos / 12);
+                const mesesPagosResto = mesesPagos % 12;
+                const anosRestantes = Math.floor(mesesRestantes / 12);
+                const mesesRestantesResto = mesesRestantes % 12;
+
+                const dataFim = new Date(e.dataInicio);
+                dataFim.setMonth(dataFim.getMonth() + e.prazoTotal);
+
+                return `
+                    <div class="emprestimo-item">
+                        <div class="flex-between">
+                            <div><span style="font-size:20px;">${e.icone}</span> <strong>${e.tipo}</strong></div>
+                            <span class="tag">${e.banco}</span>
+                        </div>
+                        <div style="font-size:13px; margin:6px 0;">
+                            <div class="flex-between">
+                                <span>💰 Total: ${MOEDA} ${e.valorTotal.toFixed(2)}</span>
+                                <span>✅ Paid: ${MOEDA} ${e.amortizado.toFixed(2)}</span>
+                                <span>📉 Debt: ${MOEDA} ${e.dividaAtual.toFixed(2)}</span>
+                            </div>
+                            <div class="flex-between" style="font-size:12px; color:var(--texto-cinza); margin-top:4px;">
+                                <span>📅 Start: ${new Date(e.dataInicio).toLocaleDateString('en-US')}</span>
+                                <span>📅 Expected End: ${dataFim.toLocaleDateString('en-US')}</span>
+                            </div>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width:${progresso}%;"></div>
+                        </div>
+                        <div class="flex-between" style="font-size:12px; color:var(--texto-cinza);">
+                            <span>${progresso.toFixed(1)}% paid</span>
+                            <span>⏱️ ${anosPagos}y ${mesesPagosResto}m paid</span>
+                            <span>⏱️ ${anosRestantes}y ${mesesRestantesResto}m remaining</span>
+                        </div>
+                        <div class="flex-between" style="margin-top:8px;">
+                            <span style="font-size:13px;">💳 Installment: ${MOEDA} ${e.parcelaMensal.toFixed(2)}</span>
+                            <span style="font-size:13px;">📊 Rate: ${e.taxa}%</span>
+                        </div>
+                        <div style="margin-top:8px; display:flex; gap:6px; flex-wrap:wrap;">
+                            <button class="btn-outline btn-pequeno" onclick="simularAmortizacaoExtra(${e.id})">🔮 Simulate Extra</button>
+                            <button class="btn-outline btn-pequeno" onclick="removerEmprestimo(${e.id})">🗑️</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function simularAmortizacaoExtra(id) {
+            const emprestimo = emprestimos.find(e => e.id === id);
+            if (!emprestimo) return;
+
+            const extra = parseFloat(prompt('Extra amount to amortize (€):'));
+            if (!extra || extra <= 0) return;
+
+            const novaDivida = Math.max(0, emprestimo.dividaAtual - extra);
+            const economiaJuros = (extra * (emprestimo.taxa / 100) * (emprestimo.prazoTotal / 12)) / 2;
+            const reducaoPrazo = Math.floor(extra / emprestimo.parcelaMensal);
+
+            alert(`📊 EXTRA AMORTIZATION SIMULATION\n\n` +
+                `💰 Current debt: ${MOEDA} ${emprestimo.dividaAtual.toFixed(2)}\n` +
+                `💰 New debt: ${MOEDA} ${novaDivida.toFixed(2)}\n` +
+                `💵 Interest savings: ${MOEDA} ${economiaJuros.toFixed(2)}\n` +
+                `⏱️ Term reduction: ${reducaoPrazo} months\n\n` +
+                `Apply extra amortization?`);
+
+            if (confirm('Apply this extra amortization?')) {
+                emprestimo.dividaAtual = novaDivida;
+                emprestimo.amortizado = emprestimo.valorTotal - novaDivida;
+                localStorage.setItem('emprestimos', JSON.stringify(emprestimos));
+                carregarEmprestimos();
+
+                anotacoes.unshift({
+                    id: Date.now(),
+                    modulo: 'M4',
+                    titulo: `Extra Amortization - ${emprestimo.tipo}`,
+                    texto: `Extra amortization of ${MOEDA} ${extra.toFixed(2)} applied. Interest savings of ${MOEDA} ${economiaJuros.toFixed(2)}.`,
+                    prioridade: '⚡',
+                    data: new Date().toISOString(),
+                    vinculado: `Loan #${emprestimo.id}`
+                });
+                localStorage.setItem('anotacoes', JSON.stringify(anotacoes));
+                alert('✅ Extra amortization applied!');
+            }
+        }
+
+        function removerEmprestimo(id) {
+            if (!confirm('Remove this loan?')) return;
+            emprestimos = emprestimos.filter(e => e.id !== id);
+            localStorage.setItem('emprestimos', JSON.stringify(emprestimos));
+            carregarEmprestimos();
+        }
+
+        // ================================================================
+        // M5 - LIFE & WORK (WITH EDIT AND DELETE)
+        // ================================================================
+
+        function trocarTabM5(tab) {
+            document.getElementById('tab-familia').className = tab === 'familia' ? 'ativo' : '';
+            document.getElementById('tab-prof').className = tab === 'prof' ? 'ativo' : '';
+            document.getElementById('tab-m5-notas').className = tab === 'notas' ? 'ativo' : '';
+            document.getElementById('conteudo-familia').style.display = tab === 'familia' ? 'block' : 'none';
+            document.getElementById('conteudo-prof').style.display = tab === 'prof' ? 'block' : 'none';
+            document.getElementById('conteudo-m5-notas').style.display = tab === 'notas' ? 'block' : 'none';
+        }
+
+        function addEventoM5(tipo) {
+            const titulo = prompt('Event title:');
+            if (!titulo) return;
+            const data = prompt('Date (YYYY-MM-DD):');
+            if (!data) return;
+            const custoPrevisto = parseFloat(prompt('Estimated cost (€):')) || 0;
+
+            const prioridade = prompt(
+                'Choose priority:\n' +
+                '1 - ⚡ Lightning (Emergency)\n' +
+                '2 - 🔴 Immediate (High)\n' +
+                '3 - 🟡 Urgent (Medium)\n' +
+                '4 - 🟢 Routine (Low)',
+                '4'
+            );
+
+            const prioridadeMap = {
+                '1': '⚡',
+                '2': '🔴',
+                '3': '🟡',
+                '4': '🟢'
+            };
+
+            const prioridadeSelecionada = prioridadeMap[prioridade] || '🟢';
+
+            const evento = {
+                id: Date.now(),
+                titulo,
+                data,
+                custoPrevisto,
+                custoReal: null,
+                icone: tipo === 'familia' ? '👨‍👩‍👧' : '💼',
+                prioridade: prioridadeSelecionada,
+                confirmado: false,
+                dataCriacao: new Date().toISOString()
+            };
+
+            eventosM5[tipo].push(evento);
+            localStorage.setItem('eventosM5', JSON.stringify(eventosM5));
+
+            anotacoes.unshift({
+                id: Date.now() + 1,
+                modulo: 'M5',
+                titulo: `New event: ${titulo}`,
+                texto: `${tipo === 'familia' ? '👨‍👩‍👧 Family' : '💼 Professional'} - ${data} | Estimated: ${MOEDA} ${custoPrevisto.toFixed(2)} | Priority: ${prioridadeSelecionada}`,
+                prioridade: prioridadeSelecionada,
+                data: new Date().toISOString(),
+                vinculado: `Event #${evento.id}`
+            });
+            localStorage.setItem('anotacoes', JSON.stringify(anotacoes));
+
+            carregarM5();
+            alert('✅ Event created!');
+        }
+
+        function addMembroM5(tipo) {
+            const nome = prompt('Name:');
+            if (!nome) return;
+            const papel = prompt('Role:');
+            membrosM5[tipo].push({ nome, papel: papel || 'Member' });
+            localStorage.setItem('membrosM5', JSON.stringify(membrosM5));
+            carregarM5();
+        }
+
+        function carregarM5() {
+            // Family - Calendar with buttons
+            document.getElementById('calendario-familia').innerHTML = eventosM5.familia.length ?
+                eventosM5.familia.map(e =>
+                    `<div class="linha" style="flex-wrap:wrap; gap:4px;">
+                        <div style="display:flex; align-items:center; gap:6px; flex:1; min-width:120px;">
+                            <span>${e.icone || '📅'}</span>
+                            <span style="font-weight:500;">${e.titulo}</span>
+                            <span class="tag ${e.prioridade === '⚡' ? 'tag-relampago' : e.prioridade === '🔴' ? 'tag-imediato' : e.prioridade === '🟡' ? 'tag-urgente' : 'tag-rotina'}">${e.prioridade || '🟢'}</span>
+                        </div>
+                        <div style="display:flex; align-items:center; gap:4px; flex-wrap:wrap;">
+                            <span class="tag">${e.data}</span>
+                            <span style="font-size:11px; color:var(--texto-cinza);">
+                                Est: ${MOEDA} ${(e.custoPrevisto || 0).toFixed(2)}
+                                ${e.custoReal ? `| Actual: ${MOEDA} ${e.custoReal.toFixed(2)}` : ''}
+                                ${e.confirmado ? '✅' : '⏳'}
+                            </span>
+                            <button class="btn-outline btn-pequeno" onclick="editarEventoM5(${e.id}, 'familia')" title="Edit" style="padding:2px 6px; font-size:10px;">✏️</button>
+                            <button class="btn-outline btn-pequeno" onclick="removerEventoM5(${e.id}, 'familia')" title="Remove" style="padding:2px 6px; font-size:10px;">🗑️</button>
+                        </div>
+                    </div>`
+                ).join('') :
+                '<div style="color:var(--texto-cinza);">No events</div>';
+
+            // Family Members
+            document.getElementById('membros-familia').innerHTML = membrosM5.familia.length ?
+                membrosM5.familia.map(m => `<div class="linha"><span class="avatar">${m.nome[0]}</span> ${m.nome} <span class="tag">${m.papel || 'Member'}</span></div>`).join(
+                    '') :
+                '<div style="color:var(--texto-cinza);">No members</div>';
+
+            // Family Spending Summary
+            const gastosFamilia = lancamentos
+                .filter(l => l.tipo === 'Expense' && l.categoria.nome === 'M5 - Family' && l.confirmado)
+                .reduce((s, l) => s + l.valor, 0);
+            document.getElementById('resumo-gastos-familia').innerHTML =
+                `<div class="flex-between"><span>Family spending this month:</span><span class="${gastosFamilia > 0 ? 'negativo' : ''}">${MOEDA} ${gastosFamilia.toFixed(2)}</span></div>`;
+
+            // Professional - Agenda with buttons
+            document.getElementById('agenda-prof').innerHTML = eventosM5.prof.length ?
+                eventosM5.prof.map(e =>
+                    `<div class="linha" style="flex-wrap:wrap; gap:4px;">
+                        <div style="display:flex; align-items:center; gap:6px; flex:1; min-width:120px;">
+                            <span>💼</span>
+                            <span style="font-weight:500;">${e.titulo}</span>
+                            <span class="tag ${e.prioridade === '⚡' ? 'tag-relampago' : e.prioridade === '🔴' ? 'tag-imediato' : e.prioridade === '🟡' ? 'tag-urgente' : 'tag-rotina'}">${e.prioridade || '🟢'}</span>
+                        </div>
+                        <div style="display:flex; align-items:center; gap:4px; flex-wrap:wrap;">
+                            <span class="tag">${e.data}</span>
+                            <span style="font-size:11px; color:var(--texto-cinza);">
+                                Est: ${MOEDA} ${(e.custoPrevisto || 0).toFixed(2)}
+                                ${e.custoReal ? `| Actual: ${MOEDA} ${e.custoReal.toFixed(2)}` : ''}
+                            </span>
+                            <button class="btn-outline btn-pequeno" onclick="editarEventoM5(${e.id}, 'prof')" title="Edit" style="padding:2px 6px; font-size:10px;">✏️</button>
+                            <button class="btn-outline btn-pequeno" onclick="removerEventoM5(${e.id}, 'prof')" title="Remove" style="padding:2px 6px; font-size:10px;">🗑️</button>
+                        </div>
+                    </div>`
+                ).join('') :
+                '<div style="color:var(--texto-cinza);">No commitments</div>';
+
+            // Professional Team
+            document.getElementById('equipe-prof').innerHTML = membrosM5.prof.length ?
+                membrosM5.prof.map(m => `<div class="linha"><span class="avatar">${m.nome[0]}</span> ${m.nome} <span class="tag">${m.papel || 'Colleague'}</span></div>`).join(
+                    '') :
+                '<div style="color:var(--texto-cinza);">No members</div>';
+
+            // Notes M5
+            const anotacoesM5 = anotacoes.filter(a => a.modulo === 'M5');
+            document.getElementById('anotacoes-m5').innerHTML = anotacoesM5.length ?
+                anotacoesM5.map(a =>
+                    `<div class="nota-item" style="border-left-color: ${a.prioridade === '⚡' ? '#FF4444' : a.prioridade === '🔴' ? '#FF6B35' : a.prioridade === '🟡' ? '#FFD93D' : '#6BCB77'};">
+                        <div class="nota-header">
+                            <span class="nota-titulo">${a.prioridade} ${a.titulo}</span>
+                            <span class="nota-data">${new Date(a.data).toLocaleDateString('en-US')} ${new Date(a.data).toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit'})}</span>
+                        </div>
+                        <div class="nota-texto">${a.texto}</div>
+                    </div>`
+                ).join('') :
+                '<div style="color:var(--texto-cinza);">No notes</div>';
+        }
+
+        // ================================================================
+        // M5 - EDIT AND REMOVE EVENTS
+        // ================================================================
+
+        function editarEventoM5(id, tipo) {
+            const evento = eventosM5[tipo].find(e => e.id === id);
+            if (!evento) return;
+
+            const novoTitulo = prompt('Edit title:', evento.titulo);
+            if (novoTitulo === null) return;
+            if (novoTitulo.trim()) evento.titulo = novoTitulo.trim();
+
+            const novaData = prompt('Edit date (YYYY-MM-DD):', evento.data);
+            if (novaData === null) return;
+            if (novaData.trim()) evento.data = novaData.trim();
+
+            const novoCusto = parseFloat(prompt('Edit estimated cost (€):', evento.custoPrevisto));
+            if (!isNaN(novoCusto) && novoCusto >= 0) evento.custoPrevisto = novoCusto;
+
+            const custoReal = parseFloat(prompt('Edit actual cost (€) - leave empty if not applicable:', evento.custoReal ||
+                0));
+            if (!isNaN(custoReal) && custoReal >= 0) evento.custoReal = custoReal;
+
+            const prioridade = prompt(
+                'Choose priority:\n' +
+                '1 - ⚡ Lightning (Emergency)\n' +
+                '2 - 🔴 Immediate (High)\n' +
+                '3 - 🟡 Urgent (Medium)\n' +
+                '4 - 🟢 Routine (Low)',
+                evento.prioridade === '⚡' ? '1' : evento.prioridade === '🔴' ? '2' : evento.prioridade === '🟡' ? '3' :
+                '4'
+            );
+
+            const prioridadeMap = {
+                '1': '⚡',
+                '2': '🔴',
+                '3': '🟡',
+                '4': '🟢'
+            };
+
+            if (prioridade && prioridadeMap[prioridade]) {
+                evento.prioridade = prioridadeMap[prioridade];
+            }
+
+            const confirmar = confirm('Event already occurred? (OK = Yes, Cancel = No)');
+            evento.confirmado = confirmar;
+
+            localStorage.setItem('eventosM5', JSON.stringify(eventosM5));
+            carregarM5();
+            alert('✅ Event updated!');
+        }
+
+        function removerEventoM5(id, tipo) {
+            if (!confirm('Remove this event?')) return;
+            eventosM5[tipo] = eventosM5[tipo].filter(e => e.id !== id);
+            localStorage.setItem('eventosM5', JSON.stringify(eventosM5));
+            carregarM5();
+            alert('🗑️ Event removed!');
+        }
+
+        // ================================================================
+        // M6 - PROJECTS
+        // ================================================================
+
+        function addProjetoM6() {
+            const nome = prompt('Project name:');
+            if (!nome) return;
+            const descricao = prompt('Description:');
+            const inicio = prompt('Start date (YYYY-MM-DD):');
+            const fim = prompt('Expected end date (YYYY-MM-DD):');
+            const custoPrevisto = parseFloat(prompt('Estimated cost (€):')) || 0;
+            const tipo = confirm('Team project?') ? 'Team' : 'Individual';
+
+            const projeto = {
+                id: Date.now(),
+                nome,
+                descricao: descricao || '',
+                inicio,
+                fim,
+                custoPrevisto,
+                custoReal: 0,
+                tipo,
+                status: 'Planned',
+                progresso: 0,
+                dataCriacao: new Date().toISOString()
+            };
+
+            projetosM6.push(projeto);
+            localStorage.setItem('projetosM6', JSON.stringify(projetosM6));
+
+            anotacoes.unshift({
+                id: Date.now() + 1,
+                modulo: 'M6',
+                titulo: `New project: ${nome}`,
+                texto: `${tipo} - Start: ${inicio} | End: ${fim} | Estimated: ${MOEDA} ${custoPrevisto.toFixed(2)}`,
+                prioridade: '🟢',
+                data: new Date().toISOString(),
+                vinculado: `Project #${projeto.id}`
+            });
+            localStorage.setItem('anotacoes', JSON.stringify(anotacoes));
+
+            carregarM6();
+            alert('✅ Project created!');
+        }
+
+        function carregarM6() {
+            const container = document.getElementById('lista-projetos-m6');
+            if (!projetosM6.length) {
+                container.innerHTML = '<div class="card" style="text-align:center; color:var(--texto-cinza);">No projects</div>';
+                return;
+            }
+
+            const ativos = projetosM6.filter(p => p.status !== 'Completed' && p.status !== 'Canceled').length;
+            const concluidos = projetosM6.filter(p => p.status === 'Completed').length;
+            const totalCusto = projetosM6.reduce((s, p) => s + p.custoPrevisto, 0);
+
+            document.getElementById('total-projetos').textContent = projetosM6.length;
+            document.getElementById('custo-projetos').textContent = `${MOEDA} ${totalCusto.toFixed(2)}`;
+            document.getElementById('concluidos-projetos').textContent = concluidos;
+
+            container.innerHTML = projetosM6.map(p =>
+                `<div class="card">
+                    <div class="flex-between">
+                        <h3>${p.status === 'Completed' ? '✅' : p.status === 'In Progress' ? '🔄' : '⏳'} ${p.nome}</h3>
+                        <span class="tag ${p.status === 'Completed' ? 'tag-verde' : p.status === 'In Progress' ? 'tag-ouro' : 'tag-azul'}">${p.status}</span>
+                    </div>
+                    <p style="color:var(--texto-cinza); font-size:13px;">${p.descricao}</p>
+                    <div style="font-size:13px; margin:6px 0;">
+                        <div class="flex-between">
+                            <span>📅 ${p.inicio} → ${p.fim}</span>
+                            <span>${p.tipo}</span>
+                        </div>
+                        <div class="flex-between">
+                            <span>💰 Estimated: ${MOEDA} ${p.custoPrevisto.toFixed(2)}</span>
+                            <span>💰 Actual: ${MOEDA} ${p.custoReal.toFixed(2)}</span>
+                        </div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width:${p.progresso}%;"></div>
+                    </div>
+                    <div class="flex-between" style="font-size:12px; color:var(--texto-cinza);">
+                        <span>${p.progresso}% complete</span>
+                        <span>💰 Difference: ${MOEDA} ${(p.custoPrevisto - p.custoReal).toFixed(2)}</span>
+                    </div>
+                    <div style="margin-top:8px; display:flex; gap:6px; flex-wrap:wrap;">
+                        <button class="btn-outline btn-pequeno" onclick="editarProjetoM6(${p.id})">✏️</button>
+                        <button class="btn-outline btn-pequeno" onclick="removerProjetoM6(${p.id})">🗑️</button>
+                        <button class="btn-outline btn-pequeno" onclick="confirmarProjetoM6(${p.id})">✅ Confirm</button>
+                    </div>
+                </div>`
+            ).join('');
+        }
+
+        function editarProjetoM6(id) {
+            const projeto = projetosM6.find(p => p.id === id);
+            if (!projeto) return;
+
+            const novoStatus = prompt('Status (Planned/In Progress/Completed/Canceled):', projeto.status);
+            if (novoStatus) projeto.status = novoStatus;
+
+            const progresso = parseInt(prompt('Progress (0-100):', projeto.progresso));
+            if (!isNaN(progresso)) projeto.progresso = Math.min(100, Math.max(0, progresso));
+
+            const custoReal = parseFloat(prompt('Actual Cost (€):', projeto.custoReal));
+            if (!isNaN(custoReal)) projeto.custoReal = custoReal;
+
+            localStorage.setItem('projetosM6', JSON.stringify(projetosM6));
+            carregarM6();
+            alert('✅ Project updated!');
+        }
+
+        function removerProjetoM6(id) {
+            if (!confirm('Remove this project?')) return;
+            projetosM6 = projetosM6.filter(p => p.id !== id);
+            localStorage.setItem('projetosM6', JSON.stringify(projetosM6));
+            carregarM6();
+        }
+
+        function confirmarProjetoM6(id) {
+            const projeto = projetosM6.find(p => p.id === id);
+            if (!projeto) return;
+
+            if (projeto.custoReal > 0) {
+                lancamentos.unshift({
+                    id: Date.now(),
+                    valor: projeto.custoReal,
+                    tipo: 'Expense',
+                    categoria: { nome: 'M6 - Projects', icone: '🚀', cor: '#D4A574' },
+                    descricao: `${projeto.nome} - ${new Date().toISOString().split('T')[0]}`,
+                    conta: '',
+                    data: new Date().toISOString(),
+                    confirmado: true,
+                    origem: 'M6 - Projects',
+                    dataConfirmacao: new Date().toISOString()
+                });
+                localStorage.setItem('lancamentos', JSON.stringify(lancamentos));
+                alert('✅ Transaction confirmed in M2!');
+            }
+
+            projeto.status = 'Completed';
+            projeto.progresso = 100;
+            localStorage.setItem('projetosM6', JSON.stringify(projetosM6));
+            carregarM6();
+        }
+
+        // ================================================================
+        // M7 - BANK ACCOUNTS
+        // ================================================================
+
+        function addContaM7() {
+            const nome = prompt('Bank Name:');
+            if (!nome) return;
+            const tipo = confirm('Business Account?') ? 'Business' : 'Personal';
+            const titular = prompt('Account Holder Name:');
+            if (!titular) return;
+            const saldo = parseFloat(prompt('Current Balance (€):')) || 0;
+            const iban = prompt('IBAN (34 characters):');
+            const nib = prompt('NIB (21 characters):');
+
+            const conta = {
+                id: Date.now(),
+                nome,
+                tipo,
+                titular,
+                saldo,
+                iban: iban || '',
+                nib: nib || '',
+                moeda: 'EUR',
+                dataCriacao: new Date().toISOString()
+            };
+
+            contasBancarias.push(conta);
+            localStorage.setItem('contasBancarias', JSON.stringify(contasBancarias));
+            carregarContas();
+            carregarContasDropdown();
+            alert('✅ Account added!');
+        }
+
+        function carregarContas() {
+            const container = document.getElementById('lista-contas-m7');
+            if (!contasBancarias.length) {
+                container.innerHTML = '<div class="card" style="text-align:center; color:var(--texto-cinza);">No accounts</div>';
+                return;
+            }
+
+            let saldoTotal = 0;
+            contasBancarias.forEach(c => saldoTotal += c.saldo);
+
+            document.getElementById('total-contas').textContent = contasBancarias.length;
+            document.getElementById('saldo-contas-total').textContent = `${MOEDA} ${saldoTotal.toFixed(2)}`;
+
+            container.innerHTML = contasBancarias.map(c =>
+                `<div class="card">
+                    <div class="flex-between">
+                        <h3>🏦 ${c.nome}</h3>
+                        <span class="tag">${c.tipo}</span>
+                    </div>
+                    <div style="font-size:13px;">
+                        <div class="flex-between">
+                            <span>👤 ${c.titular}</span>
+                            <span class="valor" style="font-size:18px;">${MOEDA} ${c.saldo.toFixed(2)}</span>
+                        </div>
+                        <div style="font-size:12px; color:var(--texto-cinza); margin-top:4px;">
+                            <div>IBAN: ${c.iban}</div>
+                            <div>NIB: ${c.nib}</div>
+                        </div>
+                    </div>
+                    <div style="margin-top:8px; display:flex; gap:6px; flex-wrap:wrap;">
+                        <button class="btn-outline btn-pequeno" onclick="editarContaM7(${c.id})">✏️</button>
+                        <button class="btn-outline btn-pequeno" onclick="removerContaM7(${c.id})">🗑️</button>
+                    </div>
+                </div>`
+            ).join('');
+        }
+
+        function editarContaM7(id) {
+            const conta = contasBancarias.find(c => c.id === id);
+            if (!conta) return;
+
+            const novoSaldo = parseFloat(prompt('New Balance (€):', conta.saldo));
+            if (!isNaN(novoSaldo)) conta.saldo = novoSaldo;
+
+            localStorage.setItem('contasBancarias', JSON.stringify(contasBancarias));
+            carregarContas();
+            carregarContasDropdown();
+            alert('✅ Account updated!');
+        }
+
+        function removerContaM7(id) {
+            if (!confirm('Remove this account?')) return;
+            contasBancarias = contasBancarias.filter(c => c.id !== id);
+            localStorage.setItem('contasBancarias', JSON.stringify(contasBancarias));
+            carregarContas();
+            carregarContasDropdown();
+        }
+
+        // ================================================================
+        // M8 - SAVINGS/GOALS
+        // ================================================================
+
+        function addMetaM8() {
+            const nome = prompt('Goal Name:');
+            if (!nome) return;
+            const descricao = prompt('Description:');
+            const target = parseFloat(prompt('Target Amount (€):'));
+            if (!target) return;
+            const tempo = parseInt(prompt('Estimated Time (3, 6, 9 or 12 months):', '6'));
+            const inicio = prompt('Start Date (YYYY-MM-DD):');
+
+            const meta = {
+                id: Date.now(),
+                nome,
+                descricao: descricao || '',
+                target,
+                tempo,
+                inicio: inicio || new Date().toISOString().split('T')[0],
+                poupado: 0,
+                dataCriacao: new Date().toISOString()
+            };
+
+            metasM8.push(meta);
+            localStorage.setItem('metasM8', JSON.stringify(metasM8));
+
+            anotacoes.unshift({
+                id: Date.now() + 1,
+                modulo: 'M8',
+                titulo: `New Goal: ${nome}`,
+                texto: `Target: ${MOEDA} ${target.toFixed(2)} | ${tempo} months`,
+                prioridade: '🟢',
+                data: new Date().toISOString(),
+                vinculado: `Goal #${meta.id}`
+            });
+            localStorage.setItem('anotacoes', JSON.stringify(anotacoes));
+
+            carregarMetas();
+            alert('✅ Goal created!');
+        }
+
+        function carregarMetas() {
+            const container = document.getElementById('lista-metas-m8');
+            if (!metasM8.length) {
+                container.innerHTML = '<div class="card" style="text-align:center; color:var(--texto-cinza);">No goals</div>';
+                return;
+            }
+
+            let totalTarget = 0;
+            let totalPoupado = 0;
+            metasM8.forEach(m => {
+                totalTarget += m.target;
+                totalPoupado += m.poupado;
+            });
+
+            document.getElementById('total-metas').textContent = metasM8.length;
+            document.getElementById('target-total').textContent = `${MOEDA} ${totalTarget.toFixed(2)}`;
+            document.getElementById('poupado-total').textContent = `${MOEDA} ${totalPoupado.toFixed(2)}`;
+
+            const hoje = new Date();
+
+            container.innerHTML = metasM8.map(m => {
+                const parcelaMensal = m.target / m.tempo;
+                const mesesDecorridos = Math.max(0, Math.floor((hoje - new Date(m.inicio)) / (1000 * 60 * 60 * 24 *
+                30)));
+                const mesesRestantes = Math.max(0, m.tempo - mesesDecorridos);
+                const progresso = Math.min(100, (m.poupado / m.target) * 100);
+                const dataFim = new Date(m.inicio);
+                dataFim.setMonth(dataFim.getMonth() + m.tempo);
+
+                return `
+                    <div class="card">
+                        <div class="flex-between">
+                            <h3>🎯 ${m.nome}</h3>
+                            <span class="tag">${Math.round(progresso)}%</span>
+                        </div>
+                        <p style="color:var(--texto-cinza); font-size:13px;">${m.descricao}</p>
+                        <div style="font-size:13px; margin:6px 0;">
+                            <div class="flex-between">
+                                <span>💰 Target: ${MOEDA} ${m.target.toFixed(2)}</span>
+                                <span>💵 Saved: ${MOEDA} ${m.poupado.toFixed(2)}</span>
+                                <span>📉 Remaining: ${MOEDA} ${(m.target - m.poupado).toFixed(2)}</span>
+                            </div>
+                            <div class="flex-between" style="font-size:12px; color:var(--texto-cinza);">
+                                <span>📅 Start: ${new Date(m.inicio).toLocaleDateString('en-US')}</span>
+                                <span>📅 Expected End: ${dataFim.toLocaleDateString('en-US')}</span>
+                            </div>
+                            <div class="flex-between" style="font-size:12px; color:var(--texto-cinza);">
+                                <span>💳 Installment: ${MOEDA} ${parcelaMensal.toFixed(2)}/month</span>
+                                <span>⏱️ ${mesesDecorridos}m elapsed</span>
+                                <span>⏱️ ${mesesRestantes}m remaining</span>
+                            </div>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width:${progresso}%;"></div>
+                        </div>
+                        <div style="margin-top:8px; display:flex; gap:6px; flex-wrap:wrap;">
+                            <button class="btn-outline btn-pequeno" onclick="adicionarPoupancaM8(${m.id})">💰 Add</button>
+                            <button class="btn-outline btn-pequeno" onclick="removerMetaM8(${m.id})">🗑️</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function adicionarPoupancaM8(id) {
+            const meta = metasM8.find(m => m.id === id);
+            if (!meta) return;
+
+            const valor = parseFloat(prompt('Amount to add (€):'));
+            if (!valor || valor <= 0) return;
+
+            meta.poupado += valor;
+            localStorage.setItem('metasM8', JSON.stringify(metasM8));
+
+            if (meta.poupado >= meta.target) {
+                alert('🎉 Congratulations! You reached your goal ' + meta.nome + '!');
+                anotacoes.unshift({
+                    id: Date.now(),
+                    modulo: 'M8',
+                    titulo: `🎉 Goal Achieved: ${meta.nome}`,
+                    texto: `Goal of ${MOEDA} ${meta.target.toFixed(2)} achieved!`,
+                    prioridade: '⚡',
+                    data: new Date().toISOString(),
+                    vinculado: `Goal #${meta.id}`
+                });
+                localStorage.setItem('anotacoes', JSON.stringify(anotacoes));
+            }
+
+            carregarMetas();
+            alert('✅ Savings added!');
+        }
+
+        function removerMetaM8(id) {
+            if (!confirm('Remove this goal?')) return;
+            metasM8 = metasM8.filter(m => m.id !== id);
+            localStorage.setItem('metasM8', JSON.stringify(metasM8));
+            carregarMetas();
+        }
+
+        // ================================================================
+        // M9 - SIMULATION
+        // ================================================================
+
+        function executarSimulacao() {
+            const receita = parseFloat(document.getElementById('sim-receita').value) || 0;
+            const despesa = parseFloat(document.getElementById('sim-despesa').value) || 0;
+            const saldo = parseFloat(document.getElementById('sim-saldo').value) || 0;
+
+            const poupanca = receita - despesa;
+
+            const otimista = { receita: receita * 1.1, despesa: despesa * 0.9 };
+            const realista = { receita, despesa };
+            const pessimista = { receita: receita * 0.9, despesa: despesa * 1.1 };
+
+            const otimistaPoup = otimista.receita - otimista.despesa;
+            const realistaPoup = realista.receita - realista.despesa;
+            const pessimistaPoup = pessimista.receita - pessimista.despesa;
+
+            const reserva3 = despesa * 3;
+            const reserva6 = despesa * 6;
+            const reserva12 = despesa * 12;
+
+            const subsidio = receita;
+            const subsidio3 = subsidio * 3;
+            const subsidio6 = subsidio * 6;
+            const subsidio9 = subsidio * 9;
+
+            const container = document.getElementById('resultado-simulacao');
+            container.innerHTML = `
+                <div class="card">
+                    <h3>📊 Base Data</h3>
+                    <div class="grid-2">
+                        <div>💰 Income: ${MOEDA} ${receita.toFixed(2)}</div>
+                        <div>💳 Expenses: ${MOEDA} ${despesa.toFixed(2)}</div>
+                        <div>💵 Savings: ${MOEDA} ${poupanca.toFixed(2)}</div>
+                        <div>🏦 Balance: ${MOEDA} ${saldo.toFixed(2)}</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>🔮 Scenarios</h3>
+                    <div class="grid-3">
+                        <div style="background:var(--verde); padding:12px; border-radius:10px; color:#000; text-align:center;">
+                            <strong>📈 Optimistic</strong>
+                            <div>+10% Income / -10% Expenses</div>
+                            <div class="valor" style="font-size:20px;">${MOEDA} ${otimistaPoup.toFixed(2)}</div>
+                            <div style="font-size:12px;">Monthly savings</div>
+                        </div>
+                        <div style="background:var(--ouro); padding:12px; border-radius:10px; color:#000; text-align:center;">
+                            <strong>📊 Realistic</strong>
+                            <div>No changes</div>
+                            <div class="valor" style="font-size:20px;">${MOEDA} ${realistaPoup.toFixed(2)}</div>
+                            <div style="font-size:12px;">Monthly savings</div>
+                        </div>
+                        <div style="background:var(--vermelho); padding:12px; border-radius:10px; color:#000; text-align:center;">
+                            <strong>📉 Pessimistic</strong>
+                            <div>-10% Income / +10% Expenses</div>
+                            <div class="valor" style="font-size:20px;">${MOEDA} ${pessimistaPoup.toFixed(2)}</div>
+                            <div style="font-size:12px;">Monthly savings</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>🛡️ Strategic Reserve</h3>
+                    <div class="flex-between"><span>3-month reserve:</span> <strong>${MOEDA} ${reserva3.toFixed(2)}</strong></div>
+                    <div class="flex-between"><span>6-month reserve:</span> <strong>${MOEDA} ${reserva6.toFixed(2)}</strong></div>
+                    <div class="flex-between"><span>12-month reserve:</span> <strong>${MOEDA} ${reserva12.toFixed(2)}</strong></div>
+                    <div class="flex-between" style="margin-top:8px; padding-top:8px; border-top:1px solid var(--borda);">
+                        <span>🏦 Current balance:</span>
+                        <strong class="${saldo >= reserva6 ? 'positivo' : 'negativo'}">${MOEDA} ${saldo.toFixed(2)}</strong>
+                    </div>
+                    <div class="progress-bar" style="margin-top:8px;">
+                        <div class="progress-fill" style="width:${Math.min(100, (saldo / reserva6) * 100)}%;"></div>
+                    </div>
+                    <div style="font-size:12px; color:var(--texto-cinza);">
+                        ${saldo >= reserva6 ? '✅ 6-month reserve reached!' : `⚠️ ${MOEDA} ${(reserva6 - saldo).toFixed(2)} needed for 6 months`}
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>💶 Christmas Bonus</h3>
+                    <div class="grid-3">
+                        <div style="text-align:center; background:var(--fundo); padding:10px; border-radius:10px;">
+                            <div>×3</div>
+                            <div class="valor" style="font-size:18px;">${MOEDA} ${subsidio3.toFixed(2)}</div>
+                        </div>
+                        <div style="text-align:center; background:var(--fundo); padding:10px; border-radius:10px;">
+                            <div>×6</div>
+                            <div class="valor" style="font-size:18px;">${MOEDA} ${subsidio6.toFixed(2)}</div>
+                        </div>
+                        <div style="text-align:center; background:var(--fundo); padding:10px; border-radius:10px;">
+                            <div>×9</div>
+                            <div class="valor" style="font-size:18px;">${MOEDA} ${subsidio9.toFixed(2)}</div>
+                        </div>
+                    </div>
+                    <div style="margin-top:8px; font-size:13px; color:var(--texto-cinza);">
+                        💡 With ×3 bonus, your reserve becomes ${MOEDA} ${(saldo + subsidio3).toFixed(2)}
+                    </div>
+                </div>
+            `;
+        }
+
+        // ================================================================
+        // M10 - CIRCULAR ECONOMY
+        // ================================================================
+
+        function addInvestimentoM10() {
+            const nome = prompt('Investment Name:');
+            if (!nome) return;
+            const tipo = prompt('Type (Real Estate/Stocks/Business/Education/Crypto/Other):');
+            if (!tipo) return;
+            const investido = parseFloat(prompt('Amount Invested (€):'));
+            if (!investido) return;
+            const retorno = parseFloat(prompt('Monthly Return (€):'));
+            if (!retorno) return;
+            const prazo = parseInt(prompt('Return Term (months):'));
+            if (!prazo) return;
+            const onde = prompt('Where to invest? (Description):');
+            const quando = prompt('When to invest? (Date):');
+            const porquê = prompt('Why invest? (Justification):');
+
+            const icones = { 'Real Estate': '🏠', 'Stocks': '📈', 'Business': '🏢', 'Education': '🎓', 'Crypto': '🪙',
+                'Other': '📦' };
+
+            const investimento = {
+                id: Date.now(),
+                nome,
+                tipo,
+                icone: icones[tipo] || '📦',
+                investido,
+                retornoMensal: retorno,
+                prazo,
+                onde: onde || '',
+                quando: quando || '',
+                porquê: porquê || '',
+                recebido: 0,
+                status: 'Active',
+                dataCriacao: new Date().toISOString()
+            };
+
+            investimentosM10.push(investimento);
+            localStorage.setItem('investimentosM10', JSON.stringify(investimentosM10));
+
+            anotacoes.unshift({
+                id: Date.now() + 1,
+                modulo: 'M10',
+                titulo: `New Investment: ${nome}`,
+                texto: `${tipo} - Invested: ${MOEDA} ${investido.toFixed(2)} | Return: ${MOEDA} ${retorno.toFixed(2)}/month`,
+                prioridade: '🟢',
+                data: new Date().toISOString(),
+                vinculado: `Investment #${investimento.id}`
+            });
+            localStorage.setItem('anotacoes', JSON.stringify(anotacoes));
+
+            carregarInvestimentos();
+            alert('✅ Investment created!');
+        }
+
+        function carregarInvestimentos() {
+            const container = document.getElementById('lista-investimentos-m10');
+            if (!investimentosM10.length) {
+                container.innerHTML =
+                    '<div class="card" style="text-align:center; color:var(--texto-cinza);">No investments</div>';
+                return;
+            }
+
+            let totalInvestido = 0;
+            let totalRetorno = 0;
+            investimentosM10.forEach(i => {
+                totalInvestido += i.investido;
+                totalRetorno += i.retornoMensal;
+            });
+
+            document.getElementById('total-investimentos').textContent = investimentosM10.length;
+            document.getElementById('total-investido').textContent = `${MOEDA} ${totalInvestido.toFixed(2)}`;
+            document.getElementById('retorno-mensal-total').textContent = `${MOEDA} ${totalRetorno.toFixed(2)}`;
+
+            container.innerHTML = investimentosM10.map(i => {
+                const progresso = Math.min(100, (i.recebido / i.investido) * 100);
+                const roi = ((i.recebido / i.investido) * 100);
+
+                return `
+                    <div class="investimento-item">
+                        <div class="flex-between">
+                            <div><span style="font-size:20px;">${i.icone}</span> <strong>${i.nome}</strong></div>
+                            <span class="tag">${i.tipo}</span>
+                        </div>
+                        <div style="font-size:13px; margin:6px 0;">
+                            <div class="flex-between">
+                                <span>💰 Invested: ${MOEDA} ${i.investido.toFixed(2)}</span>
+                                <span>📈 Return: ${MOEDA} ${i.retornoMensal.toFixed(2)}/month</span>
+                                <span>📊 ROI: ${roi.toFixed(1)}%</span>
+                            </div>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width:${progresso}%;"></div>
+                        </div>
+                        <div style="font-size:12px; color:var(--texto-cinza);">
+                            <span>${progresso.toFixed(1)}% returned</span>
+                            <span>⏱️ ${i.prazo} months to full return</span>
+                        </div>
+                        <div style="margin-top:8px; display:flex; gap:6px; flex-wrap:wrap;">
+                            <button class="btn-outline btn-pequeno" onclick="registrarRetornoM10(${i.id})">💰 Return</button>
+                            <button class="btn-outline btn-pequeno" onclick="removerInvestimentoM10(${i.id})">🗑️</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function registrarRetornoM10(id) {
+            const investimento = investimentosM10.find(i => i.id === id);
+            if (!investimento) return;
+
+            const valor = parseFloat(prompt('Amount received (€):'));
+            if (!valor || valor <= 0) return;
+
+            investimento.recebido += valor;
+            localStorage.setItem('investimentosM10', JSON.stringify(investimentosM10));
+
+            lancamentos.unshift({
+                id: Date.now(),
+                valor: valor,
+                tipo: 'Income',
+                categoria: { nome: 'Circular Economy', icone: '🔄', cor: '#D4A574' },
+                descricao: `Return from ${investimento.nome} - ${new Date().toISOString().split('T')[0]}`,
+                conta: '',
+                data: new Date().toISOString(),
+                confirmado: true,
+                origem: 'M10 - Circular Economy',
+                dataConfirmacao: new Date().toISOString()
+            });
+            localStorage.setItem('lancamentos', JSON.stringify(lancamentos));
+
+            carregarInvestimentos();
+            alert('✅ Return recorded and transaction created in M2!');
+        }
+
+        function removerInvestimentoM10(id) {
+            if (!confirm('Remove this investment?')) return;
+            investimentosM10 = investimentosM10.filter(i => i.id !== id);
+            localStorage.setItem('investimentosM10', JSON.stringify(investimentosM10));
+            carregarInvestimentos();
+        }
+
+        // ================================================================
+        // M12 - NOTES
+        // ================================================================
+
+        function abrirModalAnotacao(modulo) {
+            document.getElementById('modal-anotacao').style.display = 'flex';
+            if (modulo) {
+                document.getElementById('modal-anotacao-modulo').value = modulo;
+            }
+            document.getElementById('modal-anotacao-titulo').value = '';
+            document.getElementById('modal-anotacao-texto').value = '';
+            document.getElementById('modal-anotacao-prioridade').value = '🟢';
+        }
+
+        function fecharModalAnotacao() {
+            document.getElementById('modal-anotacao').style.display = 'none';
+        }
+
+        function salvarAnotacao() {
+            const modulo = document.getElementById('modal-anotacao-modulo').value;
+            const titulo = document.getElementById('modal-anotacao-titulo').value.trim();
+            const prioridade = document.getElementById('modal-anotacao-prioridade').value;
+            const texto = document.getElementById('modal-anotacao-texto').value.trim();
+
+            if (!titulo) return alert('Please enter a title!');
+            if (!texto) return alert('Please enter the content!');
+
+            anotacoes.unshift({
+                id: Date.now(),
+                modulo,
+                titulo,
+                texto,
+                prioridade,
+                data: new Date().toISOString(),
+                vinculado: ''
+            });
+            localStorage.setItem('anotacoes', JSON.stringify(anotacoes));
+
+            fecharModalAnotacao();
+            carregarAnotacoes();
+            alert('✅ Note created!');
+        }
+
+        function carregarAnotacoes() {
+            const container = document.getElementById('lista-anotacoes');
+
+            const filtroModulo = document.getElementById('filtro-modulo-anotacao').value;
+            const filtroPrioridade = document.getElementById('filtro-prioridade-anotacao').value;
+
+            let anotacoesFiltradas = anotacoes;
+
+            if (filtroModulo !== 'todos') {
+                anotacoesFiltradas = anotacoesFiltradas.filter(a => a.modulo === filtroModulo);
+            }
+
+            if (filtroPrioridade !== 'todas') {
+                anotacoesFiltradas = anotacoesFiltradas.filter(a => a.prioridade === filtroPrioridade);
+            }
+
+            if (!anotacoesFiltradas.length) {
+                container.innerHTML = '<div class="card" style="text-align:center; color:var(--texto-cinza);">No notes</div>';
+                return;
+            }
+
+            const coresPrioridade = { '⚡': '#FF4444', '🔴': '#FF6B35', '🟡': '#FFD93D', '🟢': '#6BCB77' };
+
+            container.innerHTML = anotacoesFiltradas.map(a =>
+                `<div class="card" style="border-left: 4px solid ${coresPrioridade[a.prioridade] || '#6BCB77'};">
+                    <div class="flex-between">
+                        <div>
+                            <span class="tag">${a.modulo}</span>
+                            <span style="font-weight:600;">${a.prioridade} ${a.titulo}</span>
+                        </div>
+                        <span style="font-size:11px; color:var(--texto-cinza);">
+                            ${new Date(a.data).toLocaleDateString('en-US')} ${new Date(a.data).toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit'})}
+                        </span>
+                    </div>
+                    <p style="color:var(--texto-cinza); font-size:14px; margin-top:6px;">${a.texto}</p>
+                    ${a.vinculado ? `<div style="font-size:11px; color:var(--ouro); margin-top:4px;">🔗 ${a.vinculado}</div>` : ''}
+                    <div style="margin-top:8px; display:flex; gap:6px; flex-wrap:wrap;">
+                        <button class="btn-outline btn-pequeno" onclick="removerAnotacao(${a.id})">🗑️</button>
+                    </div>
+                </div>`
+            ).join('');
+        }
+
+        function carregarAnotacoesRecentes() {
+            const container = document.getElementById('anotacoes-recentes-home');
+            const recentes = anotacoes.slice(0, 5);
+
+            if (!recentes.length) {
+                container.innerHTML = '<div style="color:var(--texto-cinza); font-size:13px;">No recent notes</div>';
+                return;
+            }
+
+            const coresPrioridade = { '⚡': '#FF4444', '🔴': '#FF6B35', '🟡': '#FFD93D', '🟢': '#6BCB77' };
+
+            container.innerHTML = recentes.map(a =>
+                `<div style="display:flex; justify-content:space-between; align-items:center; padding:6px 0; border-bottom:1px solid var(--borda); font-size:13px;">
+                    <div>
+                        <span style="color:${coresPrioridade[a.prioridade] || '#6BCB77'};">${a.prioridade}</span>
+                        <span>${a.titulo}</span>
+                        <span style="font-size:10px; color:var(--texto-cinza);">(${a.modulo})</span>
+                    </div>
+                    <span style="font-size:10px; color:var(--texto-cinza);">${new Date(a.data).toLocaleDateString('en-US')}</span>
+                </div>`
+            ).join('');
+        }
+
+        function removerAnotacao(id) {
+            if (!confirm('Remove this note?')) return;
+            anotacoes = anotacoes.filter(a => a.id !== id);
+            localStorage.setItem('anotacoes', JSON.stringify(anotacoes));
+            carregarAnotacoes();
+        }
+
+        // ================================================================
+        // ALERTS
+        // ================================================================
+
+        function carregarAlertas() {
+            const hoje = new Date();
+            const em3Dias = new Date();
+            em3Dias.setDate(hoje.getDate() + 3);
+
+            const todosEventos = [
+                ...eventosM5.familia.map(e => ({ ...e, tipo: '👨‍👩‍👧 Family' })),
+                ...eventosM5.prof.map(e => ({ ...e, tipo: '💼 Work' }))
+            ];
+
+            const proximos = todosEventos.filter(e => {
+                const data = new Date(e.data);
+                return data >= hoje && data <= em3Dias;
+            });
+
+            const container = document.getElementById('alertas-gerais');
+            if (!proximos.length) {
+                container.innerHTML = '<div style="color:var(--texto-cinza); font-size:14px;">✅ Nothing in the next 3 days</div>';
+                return;
+            }
+
+            container.innerHTML = proximos.map(p =>
+                `<div class="linha">
+                    <div>${p.tipo} ${p.titulo} <span class="tag ${p.prioridade === '⚡' ? 'tag-relampago' : p.prioridade === '🔴' ? 'tag-imediato' : p.prioridade === '🟡' ? 'tag-urgente' : 'tag-rotina'}">${p.prioridade || '🟢'}</span></div>
+                    <span class="tag tag-ouro">${new Date(p.data).toLocaleDateString('en-US')}</span>
+                </div>`
+            ).join('');
+        }
+
+        // ================================================================
+        // BALANCE
+        // ================================================================
+
+        function calcularSaldos() {
+            const receitas = lancamentos.filter(l => l.tipo === 'Income' && l.confirmado).reduce((s, l) => s + l.valor, 0);
+            const despesas = lancamentos.filter(l => l.tipo === 'Expense' && l.confirmado).reduce((s, l) => s + l.valor, 0);
+            const saldo = receitas - despesas;
+
+            document.getElementById('saldo-atual').textContent = `${MOEDA} ${saldo.toFixed(2)}`;
+            document.getElementById('saldo-detalhe').textContent =
+                `💰 Income: ${MOEDA} ${receitas.toFixed(2)}  |  📉 Expenses: ${MOEDA} ${despesas.toFixed(2)}`;
+        }
+
+        // ================================================================
+        // SETTINGS (M11)
+        // ================================================================
+
+        function carregarConfiguracoes() {
+            const admin = admins.find(a => a.usuario === usuarioLogado);
+            if (admin) {
+                document.getElementById('config-nome').value = admin.usuario;
+            }
+            document.getElementById('cambio-usd').value = cotacoes.usd;
+            document.getElementById('cambio-gbp').value = cotacoes.gbp;
+        }
+
+        function atualizarCambio() {
+            const usd = parseFloat(document.getElementById('cambio-usd').value);
+            const gbp = parseFloat(document.getElementById('cambio-gbp').value);
+
+            if (usd && gbp) {
+                cotacoes.usd = usd;
+                cotacoes.gbp = gbp;
+                localStorage.setItem('cotacoes', JSON.stringify(cotacoes));
+                alert('✅ Exchange rates updated!');
+            } else {
+                alert('❌ Please enter valid values!');
+            }
+        }
+
+        // ================================================================
+        // BACKUP (M11)
+        // ================================================================
+
+        function fazerBackup() {
+            const dados = {
+                admins,
+                lancamentos,
+                lancamentosFrequentes,
+                categorias,
+                contasBancarias,
+                emprestimos,
+                eventosM5,
+                membrosM5,
+                projetosM6,
+                metasM8,
+                investimentosM10,
+                anotacoes,
+                cotacoes,
+                temaAtual,
+                versao: VERSAO
+            };
+
+            const blob = new Blob([JSON.stringify(dados, null, 2)], { type: 'application/json' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `financpessoal-backup-${new Date().toISOString().split('T')[0]}.json`;
+            link.click();
+            alert('✅ Backup created!');
+        }
+
+        function fazerRestore() {
+            const input = document.getElementById('arquivo-restore');
+            const file = input.files[0];
+
+            if (!file) return alert('Please select a .json file!');
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const dados = JSON.parse(e.target.result);
+
+                    if (dados.admins) { admins = dados.admins;
+                        localStorage.setItem('admins', JSON.stringify(admins)); }
+                    if (dados.lancamentos) { lancamentos = dados.lancamentos;
+                        localStorage.setItem('lancamentos', JSON.stringify(lancamentos)); }
+                    if (dados.lancamentosFrequentes) { lancamentosFrequentes = dados.lancamentosFrequentes;
+                        localStorage.setItem('lancamentosFrequentes', JSON.stringify(lancamentosFrequentes)); }
+                    if (dados.categorias) { categorias = dados.categorias;
+                        localStorage.setItem('categorias', JSON.stringify(categorias)); }
+                    if (dados.contasBancarias) { contasBancarias = dados.contasBancarias;
+                        localStorage.setItem('contasBancarias', JSON.stringify(contasBancarias)); }
+                    if (dados.emprestimos) { emprestimos = dados.emprestimos;
+                        localStorage.setItem('emprestimos', JSON.stringify(emprestimos)); }
+                    if (dados.eventosM5) { eventosM5 = dados.eventosM5;
+                        localStorage.setItem('eventosM5', JSON.stringify(eventosM5)); }
+                    if (dados.membrosM5) { membrosM5 = dados.membrosM5;
+                        localStorage.setItem('membrosM5', JSON.stringify(membrosM5)); }
+                    if (dados.projetosM6) { projetosM6 = dados.projetosM6;
+                        localStorage.setItem('projetosM6', JSON.stringify(projetosM6)); }
+                    if (dados.metasM8) { metasM8 = dados.metasM8;
+                        localStorage.setItem('metasM8', JSON.stringify(metasM8)); }
+                    if (dados.investimentosM10) { investimentosM10 = dados.investimentosM10;
+                        localStorage.setItem('investimentosM10', JSON.stringify(investimentosM10)); }
+                    if (dados.anotacoes) { anotacoes = dados.anotacoes;
+                        localStorage.setItem('anotacoes', JSON.stringify(anotacoes)); }
+                    if (dados.cotacoes) { cotacoes = dados.cotacoes;
+                        localStorage.setItem('cotacoes', JSON.stringify(cotacoes)); }
+                    if (dados.temaAtual) { temaAtual = dados.temaAtual;
+                        localStorage.setItem('tema', temaAtual);
+                        aplicarTema(); }
+
+                    carregarDados();
+                    alert('✅ Backup restored successfully!');
+                    mostrarTela('tela-home');
+                } catch (err) {
+                    alert('❌ Error restoring: ' + err.message);
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // ================================================================
+        // HELP (M13)
+        // ================================================================
+
+        function toggleFaq(element) {
+            const next = element.nextElementSibling;
+            if (next) {
+                next.style.display = next.style.display === 'block' ? 'none' : 'block';
+            }
+        }
+
+        // ================================================================
+        // LOAD DATA
+        // ================================================================
+
+        function carregarDados() {
+            calcularSaldos();
+            carregarAlertas();
+            carregarAnotacoesRecentes();
+            atualizarCategorias();
+            carregarUltimosLancamentos();
+            carregarFrequentes();
+            carregarContasDropdown();
+            carregarListaCategorias();
+            carregarSelecaoCategorias();
+            carregarM5();
+            carregarM6();
+            carregarContas();
+            carregarMetas();
+            carregarInvestimentos();
+            carregarEmprestimos();
+            carregarAnotacoes();
+            carregarConfiguracoes();
+            carregarListaAdmins();
+        }
+
+        // ================================================================
+        // KEYBOARD SHORTCUTS
+        // ================================================================
+
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey) {
+                switch (e.key) {
+                    case '2':
+                        e.preventDefault();
+                        mostrarTela('tela-lancar');
+                        break;
+                    case '4':
+                        e.preventDefault();
+                        mostrarTela('tela-amortizacoes');
+                        break;
+                    case '5':
+                        e.preventDefault();
+                        mostrarTela('tela-vida-trabalho');
+                        break;
+                    case '6':
+                        e.preventDefault();
+                        mostrarTela('tela-projetos');
+                        break;
+                    case '7':
+                        e.preventDefault();
+                        mostrarTela('tela-contas');
+                        break;
+                    case '8':
+                        e.preventDefault();
+                        mostrarTela('tela-poupanca');
+                        break;
+                    case '9':
+                        e.preventDefault();
+                        mostrarTela('tela-simulacao');
+                        break;
+                    case '0':
+                        e.preventDefault();
+                        mostrarTela('tela-economia');
+                        break;
+                    case 'n':
+                        e.preventDefault();
+                        abrirModalAnotacao('Geral');
+                        break;
+                    case 's':
+                        e.preventDefault();
+                        if (document.getElementById('modal-categoria').style.display === 'flex') {
+                            adicionarCategoria();
+                        }
+                        if (document.getElementById('modal-anotacao').style.display === 'flex') {
+                            salvarAnotacao();
+                        }
+                        break;
+                    case 'h':
+                        e.preventDefault();
+                        mostrarTela('tela-ajuda');
+                        break;
+                }
+            }
+            if (e.key === 'Escape') {
+                document.getElementById('modal-categoria').style.display = 'none';
+                document.getElementById('modal-anotacao').style.display = 'none';
+            }
+        });
+
+        console.log('🏦 FinançPessoal v3.0 loaded successfully!');
+        console.log('📚 13 complete modules');
+        console.log('💡 Ctrl+H for help');
+    </script>
+
+</body>
+</html>
