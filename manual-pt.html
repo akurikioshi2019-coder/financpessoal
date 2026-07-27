@@ -1,0 +1,1260 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manual do Utilizador - FinançPessoal v3.0</title>
+    <style>
+        :root {
+            --fundo: #2C1810;
+            --fundo-card: #3D2317;
+            --card: #4A2C1E;
+            --borda: #5C3D2E;
+            --primaria: #2D6A4F;
+            --secundaria: #40916C;
+            --ouro: #D4A574;
+            --ouro-claro: #E8C99B;
+            --texto: #F5F0EB;
+            --texto-cinza: #C4B5A5;
+            --verde: #6BCB77;
+            --vermelho: #FF8A8A;
+            --azul: #74B9FF;
+            --roxo: #A78BFA;
+            --relampago: #FF4444;
+            --imediato: #FF6B35;
+            --urgente: #FFD93D;
+            --rotina: #6BCB77;
+        }
+
+        [data-tema="mulher"] {
+            --primaria: #6D28D9;
+            --secundaria: #8B5CF6;
+            --roxo: #A78BFA;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background: var(--fundo);
+            color: var(--texto);
+            padding: 16px;
+            min-height: 100vh;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--fundo);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--ouro);
+            border-radius: 10px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* HEADER */
+        .header {
+            text-align: center;
+            padding: 30px 0 20px;
+            border-bottom: 2px solid var(--borda);
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            font-size: 36px;
+            background: linear-gradient(135deg, var(--ouro), var(--primaria));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .header p {
+            color: var(--texto-cinza);
+            font-size: 16px;
+            margin-top: 8px;
+        }
+        .header .versao {
+            display: inline-block;
+            background: var(--primaria);
+            color: #fff;
+            padding: 4px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            margin-top: 10px;
+        }
+
+        .btn-tema {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            background: var(--card);
+            border: 1px solid var(--borda);
+            color: var(--texto);
+            padding: 8px 14px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+            z-index: 100;
+        }
+        .btn-tema:hover {
+            border-color: var(--ouro);
+            background: var(--primaria);
+        }
+
+        /* ÍNDICE */
+        .indice {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 30px;
+            border: 1px solid var(--borda);
+        }
+        .indice h2 {
+            margin-bottom: 12px;
+            color: var(--ouro);
+        }
+        .indice-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+            gap: 6px;
+        }
+        .indice-grid a {
+            color: var(--texto-cinza);
+            text-decoration: none;
+            padding: 6px 12px;
+            border-radius: 8px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+        }
+        .indice-grid a:hover {
+            background: var(--primaria);
+            color: #fff;
+        }
+
+        /* SEÇÕES */
+        .secao {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+            border: 1px solid var(--borda);
+            scroll-margin-top: 20px;
+        }
+        .secao h2 {
+            color: var(--ouro);
+            font-size: 24px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .secao h3 {
+            color: var(--texto);
+            font-size: 18px;
+            margin: 16px 0 8px;
+        }
+        .secao h4 {
+            color: var(--texto-cinza);
+            font-size: 15px;
+            margin: 12px 0 6px;
+        }
+        .secao p {
+            color: var(--texto-cinza);
+            line-height: 1.7;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        .secao ul,
+        .secao ol {
+            color: var(--texto-cinza);
+            padding-left: 24px;
+            margin-bottom: 12px;
+        }
+        .secao ul li,
+        .secao ol li {
+            margin-bottom: 6px;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        .dica {
+            background: rgba(212, 165, 116, 0.12);
+            border-left: 4px solid var(--ouro);
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin: 12px 0;
+        }
+        .dica strong {
+            color: var(--ouro);
+        }
+
+        .atencao {
+            background: rgba(255, 138, 138, 0.12);
+            border-left: 4px solid var(--vermelho);
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin: 12px 0;
+        }
+        .atencao strong {
+            color: var(--vermelho);
+        }
+
+        .sucesso {
+            background: rgba(107, 203, 119, 0.12);
+            border-left: 4px solid var(--verde);
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin: 12px 0;
+        }
+        .sucesso strong {
+            color: var(--verde);
+        }
+
+        .passo {
+            background: var(--fundo);
+            padding: 10px 14px;
+            border-radius: 8px;
+            margin: 6px 0;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+        .passo .num {
+            background: var(--primaria);
+            color: #fff;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 13px;
+            flex-shrink: 0;
+        }
+        .passo .texto {
+            color: var(--texto);
+            font-size: 14px;
+        }
+
+        .tabela {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 12px 0;
+            font-size: 13px;
+        }
+        .tabela th {
+            background: var(--primaria);
+            color: #fff;
+            padding: 10px 12px;
+            text-align: left;
+        }
+        .tabela td {
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--borda);
+            color: var(--texto-cinza);
+        }
+        .tabela tr:hover td {
+            background: rgba(212, 165, 116, 0.05);
+        }
+
+        .tag {
+            background: var(--fundo);
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            color: var(--texto-cinza);
+            border: 1px solid var(--borda);
+            display: inline-block;
+        }
+        .tag-verde {
+            background: var(--verde);
+            color: #000;
+        }
+        .tag-roxo {
+            background: var(--roxo);
+            color: #fff;
+        }
+        .tag-azul {
+            background: var(--azul);
+            color: #000;
+        }
+        .tag-ouro {
+            background: var(--ouro);
+            color: #1A0E08;
+        }
+        .tag-vermelho {
+            background: var(--vermelho);
+            color: #000;
+        }
+        .tag-relampago {
+            background: var(--relampago);
+            color: #fff;
+        }
+        .tag-imediato {
+            background: var(--imediato);
+            color: #fff;
+        }
+        .tag-urgente {
+            background: var(--urgente);
+            color: #000;
+        }
+        .tag-rotina {
+            background: var(--rotina);
+            color: #000;
+        }
+
+        .kbd {
+            background: var(--fundo);
+            padding: 2px 10px;
+            border-radius: 4px;
+            border: 1px solid var(--borda);
+            font-size: 12px;
+            color: var(--texto);
+            font-family: monospace;
+            display: inline-block;
+        }
+
+        .modulo-badge {
+            display: inline-block;
+            background: var(--primaria);
+            color: #fff;
+            padding: 2px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        .grid-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 12px;
+        }
+
+        .modulo-card {
+            background: var(--fundo);
+            padding: 12px 16px;
+            border-radius: 10px;
+            border: 1px solid var(--borda);
+            transition: border-color 0.3s;
+        }
+        .modulo-card:hover {
+            border-color: var(--ouro);
+        }
+        .modulo-card .modulo-titulo {
+            font-weight: 600;
+            color: var(--texto);
+        }
+        .modulo-card .modulo-desc {
+            font-size: 13px;
+            color: var(--texto-cinza);
+            margin-top: 4px;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            .header h1 {
+                font-size: 26px;
+            }
+            .secao {
+                padding: 16px;
+            }
+            .secao h2 {
+                font-size: 20px;
+            }
+            .indice-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+            .grid-3 {
+                grid-template-columns: 1fr;
+            }
+            .tabela {
+                font-size: 11px;
+            }
+            .tabela th,
+            .tabela td {
+                padding: 6px 8px;
+            }
+        }
+
+        .btn-topo {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--ouro);
+            color: #1A0E08;
+            border: none;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(212, 165, 116, 0.4);
+            transition: all 0.3s;
+            display: none;
+            z-index: 100;
+        }
+        .btn-topo:hover {
+            transform: scale(1.1);
+            background: var(--ouro-claro);
+        }
+        .btn-topo.visivel {
+            display: block;
+        }
+
+        .cor-relampago {
+            color: var(--relampago);
+        }
+        .cor-imediato {
+            color: var(--imediato);
+        }
+        .cor-urgente {
+            color: var(--urgente);
+        }
+        .cor-rotina {
+            color: var(--rotina);
+        }
+
+        .fundo-relampago {
+            background: var(--relampago);
+            color: #fff;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+        }
+        .fundo-imediato {
+            background: var(--imediato);
+            color: #fff;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+        }
+        .fundo-urgente {
+            background: var(--urgente);
+            color: #000;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+        }
+        .fundo-rotina {
+            background: var(--rotina);
+            color: #000;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+        }
+    </style>
+</head>
+<body>
+
+    <button class="btn-tema" onclick="alternarTema()">
+        <span id="iconeTema">👤</span>
+        <span id="textoTema">Homem</span>
+    </button>
+
+    <div class="container">
+
+        <!-- HEADER -->
+        <div class="header">
+            <h1>📖 Manual do Utilizador</h1>
+            <p>FinançPessoal v3.0 - Gestão Financeira Inteligente</p>
+            <span class="versao">Versão 3.0 · Julho 2026</span>
+        </div>
+
+        <!-- ÍNDICE -->
+        <div class="indice">
+            <h2>📑 Índice</h2>
+            <div class="indice-grid">
+                <a href="#sec-introducao">🚀 Introdução</a>
+                <a href="#sec-instalacao">📥 Instalação</a>
+                <a href="#sec-m1">🔐 M1 - Autenticação</a>
+                <a href="#sec-m2">💰 M2 - Lançamentos</a>
+                <a href="#sec-m3">📊 M3 - Dashboard</a>
+                <a href="#sec-m4">🏦 M4 - Amortizações</a>
+                <a href="#sec-m5">👥 M5 - Vida & Trabalho</a>
+                <a href="#sec-m6">🚀 M6 - Projetos</a>
+                <a href="#sec-m7">🏦 M7 - Contas Bancárias</a>
+                <a href="#sec-m8">🎯 M8 - Poupança/Metas</a>
+                <a href="#sec-m9">🔮 M9 - Simulação</a>
+                <a href="#sec-m10">🔄 M10 - Economia Circular</a>
+                <a href="#sec-m11">⚙️ M11 - Configurações</a>
+                <a href="#sec-m12">📝 M12 - Anotações</a>
+                <a href="#sec-m13">🆘 M13 - Ajuda</a>
+                <a href="#sec-atalhos">⌨️ Atalhos</a>
+                <a href="#sec-faq">❓ FAQ</a>
+            </div>
+        </div>
+
+        <!-- INTRODUÇÃO -->
+        <div class="secao" id="sec-introducao">
+            <h2>🚀 Introdução</h2>
+            <p>
+                O <strong>FinançPessoal</strong> é uma aplicação web completa para gestão financeira pessoal,
+                desenvolvida para ser <strong>100% offline</strong> e funcionar diretamente no seu navegador.
+                Todos os dados são armazenados localmente no seu dispositivo.
+            </p>
+
+            <div class="dica">
+                <strong>💡 Características principais:</strong><br>
+                ✅ 100% offline - sem necessidade de internet<br>
+                ✅ Dados salvos no localStorage do navegador<br>
+                ✅ Responsivo - funciona em PC, tablet e telemóvel<br>
+                ✅ Temas personalizáveis (Homem/Mulher)<br>
+                ✅ Logo personalizável (upload JPEG)<br>
+                ✅ Exportação de relatórios em PDF com gráficos<br>
+                ✅ 13 módulos integrados
+            </div>
+
+            <h3>📋 Estrutura da Aplicação</h3>
+            <div class="grid-3">
+                <div class="modulo-card">
+                    <div class="modulo-titulo">🔐 M1</div>
+                    <div class="modulo-desc">Autenticação e Segurança</div>
+                </div>
+                <div class="modulo-card">
+                    <div class="modulo-titulo">💰 M2</div>
+                    <div class="modulo-desc">Lançamentos e Categorias</div>
+                </div>
+                <div class="modulo-card">
+                    <div class="modulo-titulo">📊 M3</div>
+                    <div class="modulo-desc">Dashboard e Relatórios</div>
+                </div>
+                <div class="modulo-card">
+                    <div class="modulo-titulo">🏦 M4</div>
+                    <div class="modulo-desc">Amortizações e Empréstimos</div>
+                </div>
+                <div class="modulo-card">
+                    <div class="modulo-titulo">👥 M5</div>
+                    <div class="modulo-desc">Vida e Trabalho</div>
+                </div>
+                <div class="modulo-card">
+                    <div class="modulo-titulo">🚀 M6</div>
+                    <div class="modulo-desc">Projetos</div>
+                </div>
+                <div class="modulo-card">
+                    <div class="modulo-titulo">🏦 M7</div>
+                    <div class="modulo-desc">Contas Bancárias</div>
+                </div>
+                <div class="modulo-card">
+                    <div class="modulo-titulo">🎯 M8</div>
+                    <div class="modulo-desc">Poupança e Metas</div>
+                </div>
+                <div class="modulo-card">
+                    <div class="modulo-titulo">🔮 M9</div>
+                    <div class="modulo-desc">Simulação de Cenários</div>
+                </div>
+                <div class="modulo-card">
+                    <div class="modulo-titulo">🔄 M10</div>
+                    <div class="modulo-desc">Economia Circular</div>
+                </div>
+                <div class="modulo-card">
+                    <div class="modulo-titulo">⚙️ M11</div>
+                    <div class="modulo-desc">Configurações</div>
+                </div>
+                <div class="modulo-card">
+                    <div class="modulo-titulo">📝 M12</div>
+                    <div class="modulo-desc">Central de Anotações</div>
+                </div>
+                <div class="modulo-card">
+                    <div class="modulo-titulo">🆘 M13</div>
+                    <div class="modulo-desc">Ajuda e Suporte</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- INSTALAÇÃO -->
+        <div class="secao" id="sec-instalacao">
+            <h2>📥 Instalação</h2>
+            <p>O FinançPessoal é uma aplicação web que não requer instalação. Basta abrir o ficheiro HTML no seu navegador.</p>
+
+            <h3>📋 Passos para iniciar</h3>
+            <div class="passo"><span class="num">1</span><span class="texto">Abra o ficheiro <strong>index.html</strong> no seu navegador</span></div>
+            <div class="passo"><span class="num">2</span><span class="texto">Use as credenciais iniciais: <strong style="color:var(--ouro);">admin / pass1234</strong></span></div>
+            <div class="passo"><span class="num">3</span><span class="texto">Altere as credenciais na primeira utilização em <strong>M11 - Configurações</strong></span></div>
+            <div class="passo"><span class="num">4</span><span class="texto">Comece a registar os seus dados!</span></div>
+
+            <div class="atencao">
+                <strong>⚠️ Atenção:</strong> As credenciais iniciais <strong>admin / pass1234</strong> são públicas.
+                Altere-as imediatamente após o primeiro login.
+            </div>
+
+            <div class="dica">
+                <strong>💡 Dica:</strong> O FinançPessoal funciona em qualquer navegador moderno:
+                Chrome, Firefox, Safari, Edge, Opera.
+            </div>
+        </div>
+
+        <!-- M1 - AUTENTICAÇÃO -->
+        <div class="secao" id="sec-m1">
+            <h2>🔐 M1 - Autenticação</h2>
+            <p>O sistema de autenticação protege o acesso à aplicação e permite gerir múltiplos administradores.</p>
+
+            <h3>📋 Credenciais Iniciais</h3>
+            <table class="tabela">
+                <tr><th>Campo</th><th>Valor</th></tr>
+                <tr><td>Usuário</td><td><code style="color:var(--ouro);">admin</code></td></tr>
+                <tr><td>Senha</td><td><code style="color:var(--ouro);">pass1234</code></td></tr>
+            </table>
+
+            <h3>🔧 Gestão de Admins</h3>
+            <p>Na tela de login, clique em <strong>"👤 Admins"</strong> para:</p>
+            <ul>
+                <li><strong>Adicionar</strong> novo admin (usuário + senha)</li>
+                <li><strong>Remover</strong> admins (exceto o principal "admin")</li>
+            </ul>
+
+            <div class="atencao">
+                <strong>⚠️ Atenção:</strong> O admin principal <code>admin</code> não pode ser removido.
+                Mantenha-o sempre como acesso de emergência.
+            </div>
+
+            <div class="dica">
+                <strong>💡 Dica:</strong> Após o primeiro login, é obrigatório alterar as credenciais.
+                Aceda a <strong>M11 - Configurações</strong> para alterar nome e senha.
+            </div>
+        </div>
+
+        <!-- M2 - LANÇAMENTOS -->
+        <div class="secao" id="sec-m2">
+            <h2>💰 M2 - Lançamentos e Categorias</h2>
+            <p>Registe todas as suas receitas e despesas de forma simples e rápida.</p>
+
+            <h3>📋 Como Registrar um Lançamento</h3>
+            <div class="passo"><span class="num">1</span><span class="texto">Preencha o <strong>Valor</strong> (ex: 25.50)</span></div>
+            <div class="passo"><span class="num">2</span><span class="texto">Selecione o <strong>Tipo</strong>: Receita ou Despesa</span></div>
+            <div class="passo"><span class="num">3</span><span class="texto">Escolha a <strong>Categoria</strong> ou crie uma nova</span></div>
+            <div class="passo"><span class="num">4</span><span class="texto">Adicione uma <strong>Descrição</strong></span></div>
+            <div class="passo"><span class="num">5</span><span class="texto">Selecione a <strong>Conta Bancária</strong> (M7)</span></div>
+            <div class="passo"><span class="num">6</span><span class="texto">Marque <strong>"🔁 Lançamento Frequente"</strong> se desejar guardar</span></div>
+            <div class="passo"><span class="num">7</span><span class="texto">Clique em <strong>💾 Guardar</strong></span></div>
+
+            <h3>🔄 Lançamentos Frequentes</h3>
+            <ul>
+                <li><strong>Marcar como Frequente</strong>: Ative a caixa antes de guardar</li>
+                <li><strong>Usar Frequente</strong>: Clique em "📋 Usar" para preencher o formulário</li>
+                <li><strong>Editar Frequente</strong>: Clique em "✏️" para editar valor, descrição ou tipo</li>
+                <li><strong>Remover Frequente</strong>: Clique em "🗑️" para eliminar</li>
+                <li><strong>Editar Lançamento</strong>: Clique em "✏️" na lista de últimos lançamentos</li>
+                <li><strong>Eliminar Lançamento</strong>: Clique em "🗑️" na lista de últimos lançamentos</li>
+            </ul>
+
+            <div class="dica">
+                <strong>💡 Dica:</strong> Use a opção <strong>"Lançamento Frequente"</strong> para despesas
+                recorrentes como contas de água, luz, internet, etc.
+            </div>
+
+            <div class="sucesso">
+                <strong>✅ Integração:</strong> Lançamentos das categorias especiais (M5, M6, M10)
+                requerem confirmação do módulo de origem.
+            </div>
+        </div>
+
+        <!-- M3 - DASHBOARD -->
+        <div class="secao" id="sec-m3">
+            <h2>📊 M3 - Dashboard e Relatórios</h2>
+            <p>Visualize o resumo completo das suas finanças com gráficos e estatísticas.</p>
+
+            <h3>📋 Elementos do Dashboard</h3>
+            <ul>
+                <li><strong>Resumo do Mês</strong> - Mês e ano atual</li>
+                <li><strong>Total de Receitas</strong> - Soma de todas as receitas</li>
+                <li><strong>Total de Despesas</strong> - Soma de todas as despesas</li>
+                <li><strong>Gráfico de Pizza</strong> - Proporção Receitas vs Despesas</li>
+                <li><strong>Lista de Categorias</strong> - Gerir categorias existentes</li>
+            </ul>
+
+            <h3>📄 Exportar PDF</h3>
+            <p>Clique em <strong>"📄 Exportar PDF"</strong> para gerar um relatório com:</p>
+            <ul>
+                <li>Resumo financeiro do mês</li>
+                <li>Gráfico de pizza</li>
+                <li>Lista dos últimos lançamentos</li>
+            </ul>
+
+            <h3>📂 Selecionar Categorias para PDF</h3>
+            <p>No Dashboard, pode selecionar categorias específicas para incluir no relatório:</p>
+            <ul>
+                <li>Marque/desmarque as categorias pretendidas</li>
+                <li>Clique em <strong>"Gerar PDF com Categorias Selecionadas"</strong></li>
+                <li>O relatório incluirá apenas as categorias escolhidas</li>
+            </ul>
+
+            <div class="dica">
+                <strong>💡 Dica:</strong> O PDF é gerado com o nome <code>relatorio-AAAA-MM-DD.pdf</code> e inclui todos os dados atuais.
+            </div>
+        </div>
+
+        <!-- M4 - AMORTIZAÇÕES -->
+        <div class="secao" id="sec-m4">
+            <h2>🏦 M4 - Amortizações e Empréstimos</h2>
+            <p>Gerencie todos os seus empréstimos e visualize o progresso das amortizações.</p>
+
+            <h3>📋 Tipos de Empréstimo</h3>
+            <ul>
+                <li>🏠 Crédito Habitação</li>
+                <li>🚗 Crédito Automóvel</li>
+                <li>💳 Crédito Pessoal</li>
+                <li>💳 Cartão de Crédito</li>
+                <li>🎓 Crédito Estudante</li>
+                <li>📦 Outros</li>
+            </ul>
+
+            <h3>📊 Informações do Empréstimo</h3>
+            <ul>
+                <li><strong>Valor Total</strong> - Montante original</li>
+                <li><strong>Amortizado</strong> - Valor já pago</li>
+                <li><strong>Em Dívida</strong> - Saldo devedor atual</li>
+                <li><strong>Barra de Progresso</strong> - Visualização gráfica</li>
+                <li><strong>Timeline</strong> - Anos e meses decorridos/restantes</li>
+                <li><strong>Data Fim Prevista</strong> - Cálculo automático</li>
+            </ul>
+
+            <h3>🔮 Simular Amortização Extra</h3>
+            <p>Clique em <strong>"🔮 Simular Extra"</strong> para ver o impacto de um pagamento adicional:</p>
+            <ul>
+                <li>💰 Economia de juros</li>
+                <li>⏱️ Redução de prazo</li>
+                <li>📅 Nova previsão de fim</li>
+            </ul>
+
+            <div class="dica">
+                <strong>💡 Dica:</strong> Use a simulação para planear amortizações extras e poupar em juros.
+                A app calcula automaticamente a economia e a redução do prazo.
+            </div>
+        </div>
+
+        <!-- M5 - VIDA & TRABALHO -->
+        <div class="secao" id="sec-m5">
+            <h2>👥 M5 - Vida e Trabalho</h2>
+            <p>Gerencie a sua vida pessoal (Família) e profissional (Trabalho) num só local.</p>
+
+            <h3>📋 Abas</h3>
+            <ul>
+                <li><strong>👨‍👩‍👧 Família</strong> - Gestão de vida pessoal</li>
+                <li><strong>💼 Profissional</strong> - Gestão de vida profissional</li>
+                <li><strong>📝 Notas</strong> - Anotações específicas do M5</li>
+            </ul>
+
+            <h3>👨‍👩‍👧 Família</h3>
+            <ul>
+                <li><strong>📆 Calendário</strong> - Adicione eventos (aniversários, reuniões)</li>
+                <li><strong>⚡ Prioridade</strong> - Escolha entre ⚡ Relâmpago, 🔴 Imediato, 🟡 Urgente ou 🟢 Rotina</li>
+                <li><strong>Custo Previsto vs Real</strong> - Planeie e compare</li>
+                <li><strong>👨‍👩‍👧 Membros</strong> - Liste os membros da família</li>
+                <li><strong>✏️ Editar</strong> - Clique para editar eventos</li>
+                <li><strong>🗑️ Remover</strong> - Clique para eliminar eventos</li>
+                <li><strong>📊 Resumo Gastos</strong> - Total de gastos em "M5 - Família"</li>
+            </ul>
+
+            <h3>💼 Profissional</h3>
+            <ul>
+                <li><strong>📆 Agenda</strong> - Compromissos e reuniões com prioridades</li>
+                <li><strong>👥 Equipe</strong> - Clientes, colegas e fornecedores</li>
+                <li><strong>✏️ Editar</strong> - Clique para editar compromissos</li>
+                <li><strong>🗑️ Remover</strong> - Clique para eliminar compromissos</li>
+            </ul>
+
+            <h3>⚡ Prioridades Disponíveis</h3>
+            <table class="tabela">
+                <tr><th>Prioridade</th><th>Ícone</th><th>Cor</th><th>Descrição</th></tr>
+                <tr><td>Relâmpago</td><td>⚡</td><td style="color:#FF4444;">Vermelho</td><td>Emergência - Ação imediata</td></tr>
+                <tr><td>Imediato</td><td>🔴</td><td style="color:#FF6B35;">Laranja</td><td>Alto - Fazer o mais rápido</td></tr>
+                <tr><td>Urgente</td><td>🟡</td><td style="color:#FFD93D;">Amarelo</td><td>Médio - Atenção nos próximos dias</td></tr>
+                <tr><td>Rotina</td><td>🟢</td><td style="color:#6BCB77;">Verde</td><td>Baixo - Tarefas regulares</td></tr>
+            </table>
+
+            <div class="dica">
+                <strong>💡 Dica:</strong> Os eventos do M5 aparecem automaticamente nos alertas da Home
+                quando estão nos próximos 3 dias.
+            </div>
+
+            <div class="sucesso">
+                <strong>✅ Integração:</strong> Lançamentos na categoria "M5 - Família" ou "M5 - Trabalho"
+                requerem confirmação exclusiva do M5.
+            </div>
+        </div>
+
+        <!-- M6 - PROJETOS -->
+        <div class="secao" id="sec-m6">
+            <h2>🚀 M6 - Projetos</h2>
+            <p>Gerencie projetos individuais ou coletivos com orçamento e progresso.</p>
+
+            <h3>📋 Informações do Projeto</h3>
+            <ul>
+                <li><strong>Nome</strong> - Identificador do projeto</li>
+                <li><strong>Descrição</strong> - Detalhes do projeto</li>
+                <li><strong>Data Início/Fim</strong> - Período de execução</li>
+                <li><strong>Local</strong> - Onde será realizado</li>
+                <li><strong>Tipo</strong> - Individual ou Coletivo</li>
+            </ul>
+
+            <h3>💰 Custos</h3>
+            <ul>
+                <li><strong>Custo Previsto</strong> - Orçamento inicial</li>
+                <li><strong>Custo Real</strong> - Após execução</li>
+                <li><strong>Comparação</strong> - Previsto vs Real</li>
+            </ul>
+
+            <h3>📊 Progresso</h3>
+            <ul>
+                <li><strong>Status</strong> - Planeado / Em Andamento / Concluído / Cancelado</li>
+                <li><strong>Progresso %</strong> - Percentagem concluída</li>
+                <li><strong>Barra de Progresso</strong> - Visualização gráfica</li>
+            </ul>
+
+            <div class="sucesso">
+                <strong>✅ Integração:</strong> Ao concluir um projeto, o custo real é lançado no M2
+                na categoria "M6 - Projetos" com confirmação exclusiva do M6.
+            </div>
+        </div>
+
+        <!-- M7 - CONTAS BANCÁRIAS -->
+        <div class="secao" id="sec-m7">
+            <h2>🏦 M7 - Contas Bancárias</h2>
+            <p>Gerencie todas as suas contas bancárias e comerciais num só local.</p>
+
+            <h3>📋 Informações da Conta</h3>
+            <ul>
+                <li><strong>Banco</strong> - Instituição financeira</li>
+                <li><strong>Tipo</strong> - Pessoal ou Comercial</li>
+                <li><strong>Titular</strong> - Proprietário da conta</li>
+                <li><strong>IBAN</strong> - Código internacional (34 dígitos)</li>
+                <li><strong>NIB</strong> - Código nacional (21 dígitos)</li>
+                <li><strong>Moeda</strong> - EUR, USD, GBP, etc.</li>
+                <li><strong>Saldo Atual</strong> - Valor disponível</li>
+            </ul>
+
+            <h3>📊 Resumo</h3>
+            <ul>
+                <li><strong>Total de Contas</strong> - Número de contas ativas</li>
+                <li><strong>Saldo Total</strong> - Soma de todas as contas</li>
+            </ul>
+
+            <div class="dica">
+                <strong>💡 Dica:</strong> Ao criar um lançamento, pode selecionar a conta bancária associada.
+                O saldo da conta é atualizado automaticamente.
+            </div>
+        </div>
+
+        <!-- M8 - POUPANÇA/METAS -->
+        <div class="secao" id="sec-m8">
+            <h2>🎯 M8 - Poupança e Metas</h2>
+            <p>Defina metas financeiras e acompanhe o progresso da sua poupança.</p>
+
+            <h3>📋 Informações da Meta</h3>
+            <ul>
+                <li><strong>Nome</strong> - Identificador da meta</li>
+                <li><strong>Descrição</strong> - Detalhes da meta</li>
+                <li><strong>Valor Target</strong> - Objetivo total</li>
+                <li><strong>Tempo Estimado</strong> - 3, 6, 9 ou 12 meses</li>
+                <li><strong>Data Início</strong> - Começo da poupança</li>
+                <li><strong>Valor Já Poupado</strong> - Atual</li>
+            </ul>
+
+            <h3>💳 Quebra Automática de Parcelas</h3>
+            <p>A app calcula automaticamente o valor que deve poupar por mês:</p>
+            <div class="dica">
+                <strong>Fórmula:</strong> <code>Parcela Mensal = Target ÷ Tempo (meses)</code>
+            </div>
+
+            <h3>📊 Progresso</h3>
+            <ul>
+                <li><strong>Barra de Progresso</strong> - Visualização gráfica</li>
+                <li><strong>Tempo Decorrido</strong> - Meses já passados</li>
+                <li><strong>Tempo Restante</strong> - Meses que faltam</li>
+                <li><strong>Data Fim Prevista</strong> - Cálculo automático</li>
+            </ul>
+
+            <div class="sucesso">
+                <strong>🎉 Alerta:</strong> Quando atinge a meta, aparece uma notificação e uma anotação
+                automática é criada.
+            </div>
+        </div>
+
+        <!-- M9 - SIMULAÇÃO -->
+        <div class="secao" id="sec-m9">
+            <h2>🔮 M9 - Simulação de Cenários</h2>
+            <p>Teste diferentes cenários financeiros e avalie a sua resiliência económica.</p>
+
+            <h3>📋 Dados Base</h3>
+            <ul>
+                <li><strong>Receita Mensal</strong> - Rendimento mensal</li>
+                <li><strong>Despesa Mensal</strong> - Gastos mensais</li>
+                <li><strong>Saldo Atual</strong> - Reserva existente</li>
+            </ul>
+
+            <h3>📈 Cenários</h3>
+            <div class="grid-3">
+                <div style="background:var(--verde); padding:12px; border-radius:10px; color:#000; text-align:center;">
+                    <strong>📈 Otimista</strong>
+                    <div style="font-size:12px;">+10% Receita / -10% Despesa</div>
+                </div>
+                <div style="background:var(--ouro); padding:12px; border-radius:10px; color:#000; text-align:center;">
+                    <strong>📊 Realista</strong>
+                    <div style="font-size:12px;">Sem alterações</div>
+                </div>
+                <div style="background:var(--vermelho); padding:12px; border-radius:10px; color:#000; text-align:center;">
+                    <strong>📉 Pessimista</strong>
+                    <div style="font-size:12px;">-10% Receita / +10% Despesa</div>
+                </div>
+            </div>
+
+            <h3>🛡️ Reserva Estratégica</h3>
+            <ul>
+                <li><strong>Reserva 3 meses</strong> - Mínimo recomendado</li>
+                <li><strong>Reserva 6 meses</strong> - Conforto financeiro</li>
+                <li><strong>Reserva 12 meses</strong> - Segurança máxima</li>
+            </ul>
+
+            <h3>💶 Subsídio de Natal</h3>
+            <p>Simule o impacto de receber múltiplos do subsídio: <strong>×3, ×6, ×9</strong></p>
+
+            <div class="dica">
+                <strong>💡 Dica:</strong> Use a simulação para planear o que fazer com o subsídio
+                de Natal e acelerar a sua reserva estratégica.
+            </div>
+        </div>
+
+        <!-- M10 - ECONOMIA CIRCULAR -->
+        <div class="secao" id="sec-m10">
+            <h2>🔄 M10 - Economia Circular</h2>
+            <p>Investimentos que geram retorno contínuo - "Receita que Gera Receita".</p>
+
+            <h3>❓ As 4 Perguntas Fundamentais</h3>
+            <ul>
+                <li><strong>🏠 Onde investir?</strong> - Setor/Área</li>
+                <li><strong>💰 Quanto investir?</strong> - Valor</li>
+                <li><strong>📅 Quando investir?</strong> - Data/Período</li>
+                <li><strong>🤔 Porquê investir?</strong> - Justificação</li>
+            </ul>
+
+            <h3>📊 Análise Financeira</h3>
+            <ul>
+                <li><strong>ROI</strong> - Retorno sobre Investimento</li>
+                <li><strong>Retorno Mensal</strong> - Valor recebido por mês</li>
+                <li><strong>Prazo Retorno</strong> - Tempo para recuperar</li>
+                <li><strong>Progresso</strong> - % do retorno já recebido</li>
+            </ul>
+
+            <h3>📋 Tipos de Investimento</h3>
+            <div class="grid-2">
+                <div style="background:var(--fundo); padding:10px; border-radius:8px;">🏠 Imobiliário</div>
+                <div style="background:var(--fundo); padding:10px; border-radius:8px;">📈 Ações / ETFs</div>
+                <div style="background:var(--fundo); padding:10px; border-radius:8px;">🏢 Negócio Próprio</div>
+                <div style="background:var(--fundo); padding:10px; border-radius:8px;">🎓 Formação / Educação</div>
+                <div style="background:var(--fundo); padding:10px; border-radius:8px;">🪙 Criptomoedas</div>
+                <div style="background:var(--fundo); padding:10px; border-radius:8px;">🤝 Peer-to-Peer Lending</div>
+            </div>
+
+            <div class="sucesso">
+                <strong>✅ Integração:</strong> Ao registrar um retorno, é criado automaticamente
+                um lançamento no M2 na categoria "Economia Circular".
+            </div>
+        </div>
+
+        <!-- M11 - CONFIGURAÇÕES -->
+        <div class="secao" id="sec-m11">
+            <h2>⚙️ M11 - Configurações</h2>
+            <p>Personalize o FinançPessoal de acordo com as suas preferências.</p>
+
+            <h3>👤 Perfil e Segurança</h3>
+            <ul>
+                <li><strong>Alterar Nome</strong> - Atualize o nome de utilizador</li>
+                <li><strong>Alterar Senha</strong> - Atualize a senha (com confirmação)</li>
+            </ul>
+
+            <h3>🎨 Design e Temas</h3>
+            <div class="grid-2">
+                <div style="background:var(--primaria); padding:12px; border-radius:10px; text-align:center; color:#fff;">
+                    <strong>👤 Tema Homem</strong>
+                    <div style="font-size:12px;">Castanho 🍯 + Verde 🌿</div>
+                </div>
+                <div style="background:#6D28D9; padding:12px; border-radius:10px; text-align:center; color:#fff;">
+                    <strong>👩 Tema Mulher</strong>
+                    <div style="font-size:12px;">Castanho 🍯 + Violeta 💜</div>
+                </div>
+            </div>
+
+            <h3>💱 Câmbio</h3>
+            <ul>
+                <li><strong>Moeda Base</strong> - Euro (EUR)</li>
+                <li><strong>USD</strong> - Atualize a cotação (1 EUR = ? USD)</li>
+                <li><strong>GBP</strong> - Atualize a cotação (1 EUR = ? GBP)</li>
+            </ul>
+
+            <h3>💾 Backup</h3>
+            <ul>
+                <li><strong>Exportar Backup</strong> - Descarregar todos os dados em JSON</li>
+                <li><strong>Importar Backup</strong> - Restaurar dados a partir de um ficheiro JSON</li>
+            </ul>
+
+            <div class="atencao">
+                <strong>⚠️ Atenção:</strong> O restauro substitui todos os dados atuais.
+                Faça sempre um backup antes de restaurar.
+            </div>
+
+            <div class="dica">
+                <strong>💡 Dica:</strong> Faça backups regulares para não perder os seus dados.
+                O backup inclui todos os 13 módulos.
+            </div>
+        </div>
+
+        <!-- M12 - CENTRAL DE ANOTAÇÕES -->
+        <div class="secao" id="sec-m12">
+            <h2>📝 M12 - Central de Anotações</h2>
+            <p>Centralize todas as anotações de todos os módulos com prioridades e filtros.</p>
+
+            <h3>⚡ Prioridades</h3>
+            <table class="tabela">
+                <tr><th>Prioridade</th><th>Ícone</th><th>Cor</th><th>Descrição</th></tr>
+                <tr><td>Relâmpago</td><td>⚡</td><td style="color:#FF4444;">Vermelho</td><td>Emergência - Ação imediata</td></tr>
+                <tr><td>Imediato</td><td>🔴</td><td style="color:#FF6B35;">Laranja</td><td>Alto - Fazer o mais rápido</td></tr>
+                <tr><td>Urgente</td><td>🟡</td><td style="color:#FFD93D;">Amarelo</td><td>Médio - Atenção nos próximos dias</td></tr>
+                <tr><td>Rotina</td><td>🟢</td><td style="color:#6BCB77;">Verde</td><td>Baixo - Tarefas regulares</td></tr>
+            </table>
+
+            <h3>🔍 Filtros</h3>
+            <ul>
+                <li><strong>Por Módulo</strong> - M2, M4, M5, M6, M8, M10, Geral</li>
+                <li><strong>Por Prioridade</strong> - ⚡, 🔴, 🟡, 🟢</li>
+                <li><strong>Data/Hora</strong> - Criação automática</li>
+            </ul>
+
+            <h3>📋 Criação Automática</h3>
+            <p>Anotações são criadas automaticamente quando:</p>
+            <ul>
+                <li>📌 Um evento M5 é criado</li>
+                <li>📌 Um projeto M6 é criado</li>
+                <li>📌 Uma meta M8 é criada</li>
+                <li>📌 Um investimento M10 é criado</li>
+                <li>📌 Um lançamento especial aguarda confirmação</li>
+            </ul>
+
+            <div class="dica">
+                <strong>💡 Dica:</strong> Use as prioridades para organizar tarefas importantes.
+                As anotações com prioridade ⚡ Relâmpago aparecem em destaque.
+            </div>
+        </div>
+
+        <!-- M13 - AJUDA -->
+        <div class="secao" id="sec-m13">
+            <h2>🆘 M13 - Ajuda e Suporte</h2>
+            <p>Tire todas as suas dúvidas e encontre suporte para utilizar o FinançPessoal.</p>
+
+            <h3>❓ FAQ</h3>
+            <ul>
+                <li><strong>🔽 Como faço o primeiro login?</strong> - admin / pass1234</li>
+                <li><strong>🔽 Como adicionar uma categoria?</strong> - M2 → + Nova Categoria</li>
+                <li><strong>🔽 Como exportar relatório PDF?</strong> - M3 → Exportar PDF</li>
+                <li><strong>🔽 Como funciona a integração com M2?</strong> - M5/M6/M10 requerem confirmação</li>
+                <li><strong>🔽 Como editar um lançamento frequente?</strong> - M2 → Lista de Frequentes → ✏️</li>
+                <li><strong>🔽 Como definir prioridade num evento?</strong> - M5 → Ao criar evento, escolher prioridade</li>
+            </ul>
+
+            <h3>💡 Dicas Rápidas</h3>
+            <ul>
+                <li>💡 Use o botão <strong>+</strong> para lançamentos rápidos</li>
+                <li>💡 Anotações globais com prioridades em M12</li>
+                <li>💡 Faça backup regular dos seus dados em M11</li>
+                <li>💡 Personalize o tema em Configurações</li>
+                <li>💡 Use as prioridades ⚡🔴🟡🟢 para organizar eventos e notas</li>
+            </ul>
+
+            <h3>⌨️ Atalhos de Teclado</h3>
+            <table class="tabela">
+                <tr><th>Atalho</th><th>Ação</th></tr>
+                <tr><td><span class="kbd">Ctrl+2</span></td><td>Lançamentos (M2)</td></tr>
+                <tr><td><span class="kbd">Ctrl+4</span></td><td>Amortizações (M4)</td></tr>
+                <tr><td><span class="kbd">Ctrl+5</span></td><td>Vida & Trabalho (M5)</td></tr>
+                <tr><td><span class="kbd">Ctrl+6</span></td><td>Projetos (M6)</td></tr>
+                <tr><td><span class="kbd">Ctrl+7</span></td><td>Contas (M7)</td></tr>
+                <tr><td><span class="kbd">Ctrl+8</span></td><td>Poupança (M8)</td></tr>
+                <tr><td><span class="kbd">Ctrl+9</span></td><td>Simulação (M9)</td></tr>
+                <tr><td><span class="kbd">Ctrl+0</span></td><td>Economia Circular (M10)</td></tr>
+                <tr><td><span class="kbd">Ctrl+N</span></td><td>Nova Anotação (M12)</td></tr>
+                <tr><td><span class="kbd">Ctrl+S</span></td><td>Guardar item</td></tr>
+                <tr><td><span class="kbd">Ctrl+H</span></td><td>Abrir Ajuda (M13)</td></tr>
+                <tr><td><span class="kbd">Esc</span></td><td>Fechar modal</td></tr>
+            </table>
+        </div>
+
+        <!-- ATALHOS -->
+        <div class="secao" id="sec-atalhos">
+            <h2>⌨️ Atalhos de Teclado</h2>
+            <p>Utilize os atalhos de teclado para navegar rapidamente pela aplicação.</p>
+
+            <table class="tabela">
+                <tr><th>Atalho</th><th>Ação</th><th>Módulo</th></tr>
+                <tr><td><span class="kbd">Ctrl+1</span></td><td>Autenticação</td><td>M1</td></tr>
+                <tr><td><span class="kbd">Ctrl+2</span></td><td>Lançamentos</td><td>M2</td></tr>
+                <tr><td><span class="kbd">Ctrl+3</span></td><td>Dashboard</td><td>M3</td></tr>
+                <tr><td><span class="kbd">Ctrl+4</span></td><td>Amortizações</td><td>M4</td></tr>
+                <tr><td><span class="kbd">Ctrl+5</span></td><td>Vida & Trabalho</td><td>M5</td></tr>
+                <tr><td><span class="kbd">Ctrl+6</span></td><td>Projetos</td><td>M6</td></tr>
+                <tr><td><span class="kbd">Ctrl+7</span></td><td>Contas Bancárias</td><td>M7</td></tr>
+                <tr><td><span class="kbd">Ctrl+8</span></td><td>Poupança/Metas</td><td>M8</td></tr>
+                <tr><td><span class="kbd">Ctrl+9</span></td><td>Simulação</td><td>M9</td></tr>
+                <tr><td><span class="kbd">Ctrl+0</span></td><td>Economia Circular</td><td>M10</td></tr>
+                <tr><td><span class="kbd">Ctrl+N</span></td><td>Nova Anotação</td><td>M12</td></tr>
+                <tr><td><span class="kbd">Ctrl+S</span></td><td>Guardar item</td><td>-</td></tr>
+                <tr><td><span class="kbd">Ctrl+H</span></td><td>Ajuda</td><td>M13</td></tr>
+                <tr><td><span class="kbd">Esc</span></td><td>Fechar modal</td><td>-</td></tr>
+            </table>
+
+            <div class="dica">
+                <strong>💡 Dica:</strong> Os atalhos funcionam em todas as telas da aplicação.
+                Use-os para navegar mais rapidamente.
+            </div>
+        </div>
+
+        <!-- FAQ -->
+        <div class="secao" id="sec-faq">
+            <h2>❓ Perguntas Frequentes (FAQ)</h2>
+
+            <div class="dica">
+                <strong>🔽 Como faço o primeiro login?</strong>
+                <p>Use as credenciais iniciais: <strong style="color:var(--ouro);">admin / pass1234</strong>.
+                Altere imediatamente em M11 - Configurações.</p>
+            </div>
+
+            <div class="dica">
+                <strong>🔽 Como adicionar uma nova categoria?</strong>
+                <p>No M2 - Lançamentos, clique em <strong>"+ Nova Categoria"</strong>.
+                Preencha o nome, escolha um ícone e uma cor.</p>
+            </div>
+
+            <div class="dica">
+                <strong>🔽 Como exportar um relatório PDF?</strong>
+                <p>No M3 - Dashboard, clique em <strong>"📄 Exportar PDF"</strong>.
+                O relatório inclui gráficos e a lista de lançamentos.</p>
+            </div>
+
+            <div class="dica">
+                <strong>🔽 Como funciona a integração com o M2?</strong>
+                <p>Os módulos M5 (Família/Trabalho), M6 (Projetos) e M10 (Economia Circular)
+                têm categorias especiais que <strong>requerem confirmação</strong> do módulo de origem
+                para serem lançadas no M2.</p>
+            </div>
+
+            <div class="dica">
+                <strong>🔽 Como fazer backup dos dados?</strong>
+                <p>No M11 - Configurações, em Backup, clique em <strong>"📤 Descarregar Backup"</strong>.
+                Para restaurar, selecione o ficheiro e clique em <strong>"📥 Restaurar"</strong>.</p>
+            </div>
+
+            <div class="dica">
+                <strong>🔽 Como mudar o tema?</strong>
+                <p>No M11 - Configurações, em Design, escolha entre <strong>"👤 Tema Homem"</strong>
+                (Castanho+Verde) ou <strong>"👩 Tema Mulher"</strong> (Castanho+Violeta).</p>
+            </div>
+
+            <div class="dica">
+                <strong>🔽 O que é o QuickEntryFAB?</strong>
+                <p>É o botão <strong>+</strong> no canto inferior direito. Toque para alternar
+                entre <span style="color:var(--verde);">Receita</span> e
+                <span style="color:var(--vermelho);">Despesa</span>.
+                Clique para abrir o formulário de lançamento.</p>
+            </div>
+
+            <div class="dica">
+                <strong>🔽 Como editar um lançamento frequente?</strong>
+                <p>No M2 - Lançamentos, na lista de <strong>"Lançamentos Frequentes"</strong>,
+                clique em <strong>"✏️"</strong> para editar ou <strong>"🗑️"</strong> para remover.</p>
+            </div>
+
+            <div class="dica">
+                <strong>🔽 Como definir prioridade num evento?</strong>
+                <p>No M5 - Vida & Trabalho, ao criar um evento, escolha a prioridade:
+                <span class="tag tag-relampago">⚡ Relâmpago</span>,
+                <span class="tag tag-imediato">🔴 Imediato</span>,
+                <span class="tag tag-urgente">🟡 Urgente</span> ou
+                <span class="tag tag-rotina">🟢 Rotina</span>.</p>
+            </div>
+        </div>
+
+        <!-- RODAPÉ -->
+        <div style="text-align:center; padding:30px 0; border-top:1px solid var(--borda); margin-top:30px;">
+            <p style="color:var(--texto-cinza); font-size:14px;">
+                📖 <strong style="color:var(--ouro);">FinançPessoal v3.0</strong> - Manual do Utilizador<br>
+                Desenvolvido com ❤️ para uma gestão financeira inteligente
+            </p>
+            <p style="color:var(--texto-cinza); font-size:12px; margin-top:6px;">
+                13 Módulos · 100% Offline · Gratuito · Privado
+            </p>
+        </div>
+
+    </div>
+
+    <!-- BOTÃO TOPO -->
+    <button class="btn-topo" id="btnTopo" onclick="window.scrollTo({top:0,behavior:'smooth'})">⬆</button>
+
+    <script>
+        // TEMA
+        let temaAtual = localStorage.getItem('temaManual') || 'homem';
+
+        function alternarTema() {
+            temaAtual = temaAtual === 'homem' ? 'mulher' : 'homem';
+            localStorage.setItem('temaManual', temaAtual);
+            aplicarTema();
+        }
+
+        function aplicarTema() {
+            const el = document.documentElement;
+            if (temaAtual === 'mulher') {
+                el.setAttribute('data-tema', 'mulher');
+                document.getElementById('iconeTema').textContent = '👩';
+                document.getElementById('textoTema').textContent = 'Mulher';
+            } else {
+                el.removeAttribute('data-tema');
+                document.getElementById('iconeTema').textContent = '👤';
+                document.getElementById('textoTema').textContent = 'Homem';
+            }
+        }
+
+        // BOTÃO TOPO
+        window.addEventListener('scroll', function() {
+            const btn = document.getElementById('btnTopo');
+            btn.classList.toggle('visivel', window.scrollY > 300);
+        });
+
+        // NAVEGAÇÃO SUAVE
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+
+        // APLICAR TEMA INICIAL
+        aplicarTema();
+    </script>
+
+</body>
+</html>
