@@ -1,0 +1,1051 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinançPessoal - Your Smart Financial Manager</title>
+    <style>
+        /* ================================================================
+           VARIÁVEIS E TEMAS (Honey Brown 🍯)
+           ================================================================ */
+        :root {
+            --fundo: #2C1810;
+            --fundo-card: #3D2317;
+            --card: #4A2C1E;
+            --borda: #5C3D2E;
+            --primaria: #2D6A4F;
+            --secundaria: #40916C;
+            --destaque: #52B788;
+            --ouro: #D4A574;
+            --ouro-claro: #E8C99B;
+            --ouro-escuro: #A8855A;
+            --texto: #F5F0EB;
+            --texto-cinza: #C4B5A5;
+            --verde: #6BCB77;
+            --vermelho: #FF8A8A;
+            --azul: #74B9FF;
+            --roxo: #A78BFA;
+            --relampago: #FF4444;
+            --imediato: #FF6B35;
+            --urgente: #FFD93D;
+            --rotina: #6BCB77;
+            --sombra: 0 4px 30px rgba(0, 0, 0, 0.5);
+            --sombra-clara: 0 2px 12px rgba(0, 0, 0, 0.25);
+        }
+
+        /* WOMAN THEME (Honey Brown + Violet) */
+        [data-tema="mulher"] {
+            --primaria: #6D28D9;
+            --secundaria: #8B5CF6;
+            --destaque: #A78BFA;
+            --roxo: #A78BFA;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background: var(--fundo);
+            color: var(--texto);
+            padding: 16px;
+            min-height: 100vh;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--fundo);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--ouro);
+            border-radius: 10px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* ================================================================
+           HEADER
+           ================================================================ */
+        .header {
+            text-align: center;
+            padding: 30px 0 20px;
+            border-bottom: 2px solid var(--borda);
+            margin-bottom: 30px;
+        }
+        .header .logo {
+            font-size: 52px;
+            display: block;
+            margin-bottom: 6px;
+        }
+        .header h1 {
+            font-size: 38px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--ouro), var(--primaria));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .header .sub {
+            color: var(--texto-cinza);
+            font-size: 18px;
+            margin-top: 8px;
+        }
+        .header .versao {
+            display: inline-block;
+            background: var(--primaria);
+            color: #fff;
+            padding: 4px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            margin-top: 10px;
+        }
+
+        /* ================================================================
+           THEME BUTTON
+           ================================================================ */
+        .btn-tema {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            background: var(--card);
+            border: 1px solid var(--borda);
+            color: var(--texto);
+            padding: 8px 14px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+            z-index: 100;
+            box-shadow: var(--sombra-clara);
+        }
+        .btn-tema:hover {
+            border-color: var(--ouro);
+            background: var(--primaria);
+            transform: scale(1.02);
+        }
+        .btn-tema .icone {
+            font-size: 18px;
+        }
+
+        /* ================================================================
+           APP BUTTON
+           ================================================================ */
+        .btn-app {
+            display: inline-block;
+            background: var(--primaria);
+            color: #fff;
+            padding: 16px 48px;
+            border-radius: 40px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 18px;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(45, 106, 79, 0.4);
+        }
+        .btn-app:hover {
+            background: var(--secundaria);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(45, 106, 79, 0.5);
+        }
+
+        .btn-ouro {
+            background: var(--ouro);
+            color: #1A0E08;
+            box-shadow: 0 4px 20px rgba(212, 165, 116, 0.3);
+        }
+        .btn-ouro:hover {
+            background: var(--ouro-claro);
+            box-shadow: 0 8px 30px rgba(212, 165, 116, 0.4);
+        }
+
+        /* ================================================================
+           CARDS
+           ================================================================ */
+        .card {
+            background: var(--card);
+            padding: 20px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            border: 1px solid var(--borda);
+            box-shadow: var(--sombra-clara);
+            transition: border-color 0.3s;
+        }
+        .card:hover {
+            border-color: var(--ouro);
+        }
+
+        .card h2 {
+            color: var(--ouro);
+            font-size: 24px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .card h3 {
+            color: var(--texto);
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+
+        /* ================================================================
+           STATS
+           ================================================================ */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 16px;
+            text-align: center;
+        }
+        .stat-item {
+            background: var(--fundo);
+            padding: 16px;
+            border-radius: 12px;
+            border: 1px solid var(--borda);
+        }
+        .stat-item .numero {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--ouro);
+        }
+        .stat-item .label {
+            font-size: 13px;
+            color: var(--texto-cinza);
+            margin-top: 4px;
+        }
+
+        /* ================================================================
+           MODULES
+           ================================================================ */
+        .modulos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+        .modulo-card {
+            background: var(--fundo);
+            padding: 16px 14px;
+            border-radius: 12px;
+            border: 1px solid var(--borda);
+            transition: all 0.3s;
+            text-align: center;
+        }
+        .modulo-card:hover {
+            border-color: var(--ouro);
+            transform: translateY(-4px);
+            box-shadow: var(--sombra-clara);
+        }
+        .modulo-card .icone {
+            font-size: 32px;
+            display: block;
+            margin-bottom: 6px;
+        }
+        .modulo-card .modulo-num {
+            font-size: 11px;
+            color: var(--texto-cinza);
+            background: var(--card);
+            padding: 2px 10px;
+            border-radius: 12px;
+            display: inline-block;
+            margin-bottom: 4px;
+        }
+        .modulo-card .nome {
+            font-weight: 600;
+            font-size: 15px;
+            color: var(--texto);
+        }
+        .modulo-card .desc {
+            font-size: 12px;
+            color: var(--texto-cinza);
+            margin-top: 4px;
+            line-height: 1.4;
+        }
+
+        /* ================================================================
+           FORMS
+           ================================================================ */
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px 14px;
+            background: var(--fundo);
+            border: 1px solid var(--borda);
+            border-radius: 10px;
+            color: var(--texto);
+            margin: 6px 0 12px;
+            transition: border-color 0.3s;
+            font-size: 14px;
+        }
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--ouro);
+            box-shadow: 0 0 0 3px rgba(212, 165, 116, 0.12);
+        }
+
+        label {
+            font-weight: 500;
+            color: var(--texto);
+            font-size: 14px;
+            display: block;
+            margin-top: 4px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 14px;
+            border-radius: 12px;
+            border: none;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: var(--primaria);
+            color: #fff;
+        }
+        .btn-submit:hover {
+            background: var(--secundaria);
+            transform: translateY(-2px);
+            box-shadow: var(--sombra-clara);
+        }
+        .btn-submit-ouro {
+            background: var(--ouro);
+            color: #1A0E08;
+        }
+        .btn-submit-ouro:hover {
+            background: var(--ouro-claro);
+        }
+
+        .alerta {
+            padding: 12px 16px;
+            border-radius: 10px;
+            margin: 12px 0;
+            display: none;
+        }
+        .alerta.sucesso {
+            background: rgba(107, 203, 119, 0.15);
+            border: 1px solid var(--verde);
+            color: var(--verde);
+            display: block;
+        }
+        .alerta.erro {
+            background: rgba(255, 138, 138, 0.15);
+            border: 1px solid var(--vermelho);
+            color: var(--vermelho);
+            display: block;
+        }
+
+        /* ================================================================
+           COMMENTS
+           ================================================================ */
+        .comentario {
+            background: var(--fundo);
+            padding: 14px 16px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            border-left: 4px solid var(--ouro);
+        }
+        .comentario .cabecalho {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+        .comentario .nome {
+            font-weight: 600;
+            color: var(--texto);
+        }
+        .comentario .data {
+            font-size: 11px;
+            color: var(--texto-cinza);
+        }
+        .comentario .texto {
+            color: var(--texto-cinza);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .comentario .estrelas {
+            color: var(--ouro);
+            font-size: 16px;
+            letter-spacing: 2px;
+        }
+
+        .sem-comentarios {
+            color: var(--texto-cinza);
+            text-align: center;
+            padding: 20px;
+            font-size: 15px;
+        }
+
+        /* ================================================================
+           STARS
+           ================================================================ */
+        .stars-container {
+            display: flex;
+            gap: 8px;
+            margin: 8px 0 12px;
+        }
+        .star-btn {
+            font-size: 30px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.2s;
+            color: var(--texto-cinza);
+        }
+        .star-btn:hover {
+            transform: scale(1.2);
+        }
+        .star-btn.ativo {
+            color: var(--ouro);
+            text-shadow: 0 0 20px rgba(212, 165, 116, 0.3);
+        }
+
+        /* ================================================================
+           FEATURES
+           ================================================================ */
+        .vantagens-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+        }
+        .vantagem {
+            background: var(--fundo);
+            padding: 16px;
+            border-radius: 12px;
+            border: 1px solid var(--borda);
+            text-align: center;
+        }
+        .vantagem .icone {
+            font-size: 28px;
+            display: block;
+            margin-bottom: 6px;
+        }
+        .vantagem .titulo {
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--texto);
+        }
+        .vantagem .desc {
+            font-size: 12px;
+            color: var(--texto-cinza);
+            margin-top: 4px;
+        }
+
+        /* ================================================================
+           CTA
+           ================================================================ */
+        .cta-final {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 2px solid var(--borda);
+            margin-top: 30px;
+        }
+        .cta-final h2 {
+            font-size: 32px;
+            margin-bottom: 12px;
+            color: var(--ouro);
+        }
+        .cta-final p {
+            color: var(--texto-cinza);
+            font-size: 18px;
+            max-width: 500px;
+            margin: 0 auto 24px;
+        }
+
+        /* ================================================================
+           FOOTER
+           ================================================================ */
+        .footer {
+            text-align: center;
+            padding: 30px 0 10px;
+            border-top: 1px solid var(--borda);
+            margin-top: 30px;
+        }
+        .footer p {
+            color: var(--texto-cinza);
+            font-size: 14px;
+        }
+
+        /* ================================================================
+           RESPONSIVE
+           ================================================================ */
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            .header h1 {
+                font-size: 28px;
+            }
+            .header .sub {
+                font-size: 15px;
+            }
+            .card {
+                padding: 16px;
+            }
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            .modulos-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .vantagens-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .btn-tema {
+                top: 10px;
+                right: 10px;
+                font-size: 11px;
+                padding: 6px 10px;
+            }
+            .btn-app {
+                padding: 14px 28px;
+                font-size: 16px;
+            }
+            .cta-final h2 {
+                font-size: 24px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .modulos-grid {
+                grid-template-columns: 1fr;
+            }
+            .vantagens-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ================================================================
+           TOP BUTTON
+           ================================================================ */
+        .btn-topo {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--ouro);
+            color: #1A0E08;
+            border: none;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(212, 165, 116, 0.4);
+            transition: all 0.3s;
+            display: none;
+            z-index: 100;
+        }
+        .btn-topo:hover {
+            transform: scale(1.1);
+            background: var(--ouro-claro);
+        }
+        .btn-topo.visivel {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ================================================================
+    THEME BUTTON
+    ================================================================ -->
+    <button class="btn-tema" onclick="alternarTema()">
+        <span class="icone" id="iconeTema">👤</span>
+        <span id="textoTema">Man</span>
+    </button>
+
+    <div class="container">
+
+        <!-- ============================================================
+        HEADER
+        ============================================================ -->
+        <div class="header">
+            <span class="logo">🏦</span>
+            <h1>FinançPessoal</h1>
+            <p class="sub">💡 Smart Financial Management · 100% Offline · Free</p>
+            <span class="versao">📌 v3.0 · 13 Modules</span>
+            <br><br>
+            <a href="#" class="btn-app" onclick="abrirApp()">🚀 Open App</a>
+        </div>
+
+        <!-- ============================================================
+        STATS
+        ============================================================ -->
+        <div class="card">
+            <h2>📊 Statistics</h2>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="numero" id="total-modulos">13</div>
+                    <div class="label">📚 Modules</div>
+                </div>
+                <div class="stat-item">
+                    <div class="numero" id="total-funcionalidades">47</div>
+                    <div class="label">⚡ Features</div>
+                </div>
+                <div class="stat-item">
+                    <div class="numero" id="total-lancamentos">0</div>
+                    <div class="label">💰 Transactions</div>
+                </div>
+                <div class="stat-item">
+                    <div class="numero" id="total-inscritos">0</div>
+                    <div class="label">📧 Subscribers</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================
+        FEATURES
+        ============================================================ -->
+        <div class="card">
+            <h2>⭐ Key Features</h2>
+            <div class="vantagens-grid">
+                <div class="vantagem">
+                    <span class="icone">🔒</span>
+                    <div class="titulo">100% Offline</div>
+                    <div class="desc">Your data, your device</div>
+                </div>
+                <div class="vantagem">
+                    <span class="icone">💰</span>
+                    <div class="titulo">Completely Free</div>
+                    <div class="desc">No costs, no ads</div>
+                </div>
+                <div class="vantagem">
+                    <span class="icone">🎨</span>
+                    <div class="titulo">Customizable Themes</div>
+                    <div class="desc">Man (Green) or Woman (Violet)</div>
+                </div>
+                <div class="vantagem">
+                    <span class="icone">📊</span>
+                    <div class="titulo">PDF Reports</div>
+                    <div class="desc">With charts and filters</div>
+                </div>
+                <div class="vantagem">
+                    <span class="icone">💾</span>
+                    <div class="titulo">Backup & Restore</div>
+                    <div class="desc">Export/Import your data</div>
+                </div>
+                <div class="vantagem">
+                    <span class="icone">📱</span>
+                    <div class="titulo">Responsive</div>
+                    <div class="desc">Works on all devices</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================
+        MODULES
+        ============================================================ -->
+        <div class="card">
+            <h2>📋 13 Complete Modules</h2>
+            <div class="modulos-grid">
+                <div class="modulo-card">
+                    <span class="icone">🔐</span>
+                    <span class="modulo-num">M1</span>
+                    <div class="nome">Authentication</div>
+                    <div class="desc">Secure login with admin management</div>
+                </div>
+                <div class="modulo-card">
+                    <span class="icone">💰</span>
+                    <span class="modulo-num">M2</span>
+                    <div class="nome">Transactions</div>
+                    <div class="desc">Income, Expenses & Recurring</div>
+                </div>
+                <div class="modulo-card">
+                    <span class="icone">📊</span>
+                    <span class="modulo-num">M3</span>
+                    <div class="nome">Dashboard</div>
+                    <div class="desc">Charts and PDF reports</div>
+                </div>
+                <div class="modulo-card">
+                    <span class="icone">🏦</span>
+                    <span class="modulo-num">M4</span>
+                    <div class="nome">Amortization</div>
+                    <div class="desc">Loans with simulations</div>
+                </div>
+                <div class="modulo-card">
+                    <span class="icone">👥</span>
+                    <span class="modulo-num">M5</span>
+                    <div class="nome">Life & Work</div>
+                    <div class="desc">Family, events and priorities</div>
+                </div>
+                <div class="modulo-card">
+                    <span class="icone">🚀</span>
+                    <span class="modulo-num">M6</span>
+                    <div class="nome">Projects</div>
+                    <div class="desc">Individual and collaborative</div>
+                </div>
+                <div class="modulo-card">
+                    <span class="icone">🏦</span>
+                    <span class="modulo-num">M7</span>
+                    <div class="nome">Bank Accounts</div>
+                    <div class="desc">IBAN, NIB and balance management</div>
+                </div>
+                <div class="modulo-card">
+                    <span class="icone">🎯</span>
+                    <span class="modulo-num">M8</span>
+                    <div class="nome">Savings/Goals</div>
+                    <div class="desc">Target with automatic installments</div>
+                </div>
+                <div class="modulo-card">
+                    <span class="icone">🔮</span>
+                    <span class="modulo-num">M9</span>
+                    <div class="nome">Simulation</div>
+                    <div class="desc">Scenarios and strategic reserve</div>
+                </div>
+                <div class="modulo-card">
+                    <span class="icone">🔄</span>
+                    <span class="modulo-num">M10</span>
+                    <div class="nome">Circular Economy</div>
+                    <div class="desc">Investments with returns</div>
+                </div>
+                <div class="modulo-card">
+                    <span class="icone">⚙️</span>
+                    <span class="modulo-num">M11</span>
+                    <div class="nome">Settings</div>
+                    <div class="desc">Themes, currency, exchange, backup</div>
+                </div>
+                <div class="modulo-card">
+                    <span class="icone">📝</span>
+                    <span class="modulo-num">M12</span>
+                    <div class="nome">Notes Center</div>
+                    <div class="desc">Notes with priorities</div>
+                </div>
+                <div class="modulo-card">
+                    <span class="icone">🆘</span>
+                    <span class="modulo-num">M13</span>
+                    <div class="nome">Help</div>
+                    <div class="desc">FAQ and support</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================
+        SUBSCRIPTION
+        ============================================================ -->
+        <div class="card">
+            <h2>📧 Get Updates</h2>
+            <p style="color:var(--texto-cinza); margin-bottom:12px;">
+                Stay informed about updates and new features of FinançPessoal.
+            </p>
+
+            <div id="alerta-inscricao" class="alerta"></div>
+
+            <div class="form-row">
+                <div>
+                    <label>👤 Name</label>
+                    <input type="text" id="inscricao-nome" placeholder="Your name">
+                </div>
+                <div>
+                    <label>📧 Email</label>
+                    <input type="email" id="inscricao-email" placeholder="you@email.com">
+                </div>
+            </div>
+            <button class="btn-submit btn-submit-ouro" onclick="inscrever()">📩 Subscribe</button>
+        </div>
+
+        <!-- ============================================================
+        COMMENTS
+        ============================================================ -->
+        <div class="card">
+            <h2>💬 Leave a Comment</h2>
+            <p style="color:var(--texto-cinza); margin-bottom:12px;">
+                Help us improve! Your opinion matters. 🙏
+            </p>
+
+            <div id="alerta-comentario" class="alerta"></div>
+
+            <div class="form-row">
+                <div>
+                    <label>👤 Name</label>
+                    <input type="text" id="comentario-nome" placeholder="Your name">
+                </div>
+                <div>
+                    <label>📧 Email (optional)</label>
+                    <input type="email" id="comentario-email" placeholder="you@email.com">
+                </div>
+            </div>
+
+            <label>⭐ Rating</label>
+            <div class="stars-container" id="stars-container">
+                <button class="star-btn" data-valor="1" onclick="definirEstrelas(1)">★</button>
+                <button class="star-btn" data-valor="2" onclick="definirEstrelas(2)">★</button>
+                <button class="star-btn" data-valor="3" onclick="definirEstrelas(3)">★</button>
+                <button class="star-btn" data-valor="4" onclick="definirEstrelas(4)">★</button>
+                <button class="star-btn" data-valor="5" onclick="definirEstrelas(5)">★</button>
+            </div>
+            <div style="font-size:13px; color:var(--texto-cinza); margin: -8px 0 12px;">
+                <span id="label-estrelas">Click on the stars to rate</span>
+            </div>
+
+            <label>📝 Comment</label>
+            <textarea id="comentario-texto" rows="4" placeholder="Write your comment here..."></textarea>
+
+            <button class="btn-submit" onclick="enviarComentario()">💬 Send Comment</button>
+        </div>
+
+        <!-- ============================================================
+        COMMENTS LIST
+        ============================================================ -->
+        <div class="card">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+                <h2 style="margin-bottom:0;">💬 Comments</h2>
+                <button class="btn-outline btn-pequeno" onclick="carregarComentarios()" style="border-color:var(--ouro); color:var(--ouro);">🔄 Refresh</button>
+            </div>
+            <div id="lista-comentarios">
+                <div class="sem-comentarios">⏳ Loading comments...</div>
+            </div>
+        </div>
+
+        <!-- ============================================================
+        CTA
+        ============================================================ -->
+        <div class="cta-final">
+            <h2>🚀 Start controlling your finances today</h2>
+            <p>100% Offline · Private · Free · 13 Modules</p>
+            <a href="#" class="btn-app" onclick="abrirApp()">🚀 Open App</a>
+        </div>
+
+        <!-- ============================================================
+        FOOTER
+        ============================================================ -->
+        <div class="footer">
+            <p style="font-size:18px; color:var(--ouro); font-weight:600;">🏦 FinançPessoal</p>
+            <p style="font-size:13px;">Made with ❤️ for smart financial management</p>
+            <p style="font-size:12px; margin-top:4px;">100% Offline · Private · Free · 13 Modules</p>
+            <p style="font-size:11px; margin-top:6px; color:var(--texto-cinza);">📌 v3.0 · July 2026</p>
+        </div>
+
+    </div>
+
+    <!-- ============================================================
+    TOP BUTTON
+    ============================================================ -->
+    <button class="btn-topo" id="btnTopo" onclick="window.scrollTo({top:0,behavior:'smooth'})">⬆</button>
+
+    <!-- ============================================================
+    JAVASCRIPT
+    ============================================================ -->
+    <script>
+        // ================================================================
+        // DATA
+        // ================================================================
+        let inscritos = JSON.parse(localStorage.getItem('inscritosPromocional')) || [];
+        let comentarios = JSON.parse(localStorage.getItem('comentariosPromocional')) || [];
+        let estrelasSelecionadas = 0;
+        let temaAtual = localStorage.getItem('temaPromocional') || 'homem';
+
+        const labelsEstrelas = {
+            0: 'Click on the stars to rate',
+            1: '⭐ Very Unsatisfied',
+            2: '⭐⭐ Unsatisfied',
+            3: '⭐⭐⭐ Satisfied',
+            4: '⭐⭐⭐⭐ Very Satisfied',
+            5: '⭐⭐⭐⭐⭐ Excellent!'
+        };
+
+        // ================================================================
+        // INITIALIZATION
+        // ================================================================
+        window.onload = function() {
+            aplicarTema();
+            carregarComentarios();
+            atualizarEstatisticas();
+            carregarContadorLancamentos();
+
+            window.addEventListener('scroll', function() {
+                const btn = document.getElementById('btnTopo');
+                btn.classList.toggle('visivel', window.scrollY > 300);
+            });
+        };
+
+        // ================================================================
+        // THEME
+        // ================================================================
+        function alternarTema() {
+            temaAtual = temaAtual === 'homem' ? 'mulher' : 'homem';
+            localStorage.setItem('temaPromocional', temaAtual);
+            aplicarTema();
+        }
+
+        function aplicarTema() {
+            const el = document.documentElement;
+            if (temaAtual === 'mulher') {
+                el.setAttribute('data-tema', 'mulher');
+                document.getElementById('iconeTema').textContent = '👩';
+                document.getElementById('textoTema').textContent = 'Woman';
+            } else {
+                el.removeAttribute('data-tema');
+                document.getElementById('iconeTema').textContent = '👤';
+                document.getElementById('textoTema').textContent = 'Man';
+            }
+        }
+
+        // ================================================================
+        // STARS
+        // ================================================================
+        function definirEstrelas(valor) {
+            estrelasSelecionadas = valor;
+            document.querySelectorAll('.star-btn').forEach((btn, i) => {
+                btn.classList.toggle('ativo', i < valor);
+            });
+            document.getElementById('label-estrelas').textContent = labelsEstrelas[valor];
+        }
+
+        // ================================================================
+        // SUBSCRIPTION
+        // ================================================================
+        function inscrever() {
+            const nome = document.getElementById('inscricao-nome').value.trim();
+            const email = document.getElementById('inscricao-email').value.trim();
+            const alerta = document.getElementById('alerta-inscricao');
+
+            if (!nome) return mostrarAlerta(alerta, 'Please enter your name.', 'erro');
+            if (!email || !email.includes('@')) return mostrarAlerta(alerta, 'Please enter a valid email.', 'erro');
+
+            if (inscritos.find(i => i.email === email)) {
+                return mostrarAlerta(alerta, 'This email is already subscribed!', 'erro');
+            }
+
+            inscritos.push({ nome, email, data: new Date().toISOString() });
+            localStorage.setItem('inscritosPromocional', JSON.stringify(inscritos));
+
+            document.getElementById('inscricao-nome').value = '';
+            document.getElementById('inscricao-email').value = '';
+
+            mostrarAlerta(alerta, '✅ Subscription successful! Thank you! 🙏', 'sucesso');
+            atualizarEstatisticas();
+        }
+
+        // ================================================================
+        // COMMENTS
+        // ================================================================
+        function enviarComentario() {
+            const nome = document.getElementById('comentario-nome').value.trim();
+            const email = document.getElementById('comentario-email').value.trim();
+            const texto = document.getElementById('comentario-texto').value.trim();
+            const estrelas = estrelasSelecionadas;
+            const alerta = document.getElementById('alerta-comentario');
+
+            if (!nome) return mostrarAlerta(alerta, 'Please enter your name.', 'erro');
+            if (estrelas === 0) return mostrarAlerta(alerta, 'Please rate with stars.', 'erro');
+            if (!texto || texto.length < 3) return mostrarAlerta(alerta,
+                'Please write a comment (minimum 3 characters).', 'erro');
+
+            comentarios.unshift({
+                id: Date.now(),
+                nome,
+                email: email || '',
+                estrelas,
+                texto,
+                data: new Date().toISOString()
+            });
+            localStorage.setItem('comentariosPromocional', JSON.stringify(comentarios));
+
+            document.getElementById('comentario-nome').value = '';
+            document.getElementById('comentario-email').value = '';
+            document.getElementById('comentario-texto').value = '';
+            definirEstrelas(0);
+
+            mostrarAlerta(alerta, '✅ Comment sent successfully! Thank you! 🙏', 'sucesso');
+            carregarComentarios();
+            atualizarEstatisticas();
+        }
+
+        function carregarComentarios() {
+            const container = document.getElementById('lista-comentarios');
+
+            if (!comentarios.length) {
+                container.innerHTML = `
+                    <div class="sem-comentarios">
+                        💬 No comments yet.<br>
+                        Be the first to leave your opinion!
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = comentarios.map(c => {
+                const data = new Date(c.data);
+                const dataStr = data.toLocaleDateString('en-US') + ' ' +
+                    data.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+                const estrelasStr = '★'.repeat(c.estrelas) + '☆'.repeat(5 - c.estrelas);
+
+                return `
+                    <div class="comentario">
+                        <div class="cabecalho">
+                            <div>
+                                <span class="nome">👤 ${c.nome}</span>
+                                ${c.email ? `<span style="font-size:11px; color:var(--texto-cinza);">(${c.email})</span>` : ''}
+                            </div>
+                            <div>
+                                <span class="estrelas">${estrelasStr}</span>
+                                <span class="data">${dataStr}</span>
+                            </div>
+                        </div>
+                        <div class="texto">${c.texto}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // ================================================================
+        // STATS
+        // ================================================================
+        function atualizarEstatisticas() {
+            document.getElementById('total-inscritos').textContent = inscritos.length;
+        }
+
+        function carregarContadorLancamentos() {
+            try {
+                const lancamentosApp = JSON.parse(localStorage.getItem('lancamentos')) || [];
+                document.getElementById('total-lancamentos').textContent = lancamentosApp.length;
+            } catch (e) {
+                document.getElementById('total-lancamentos').textContent = '0+';
+            }
+        }
+
+        // ================================================================
+        // ALERTS
+        // ================================================================
+        function mostrarAlerta(el, mensagem, tipo) {
+            el.textContent = mensagem;
+            el.className = 'alerta ' + tipo;
+            setTimeout(() => { el.className = 'alerta'; }, 6000);
+        }
+
+        // ================================================================
+        // OPEN APP
+        // ================================================================
+        function abrirApp() {
+            alert('🚀 Open the index.html file to access FinançPessoal!');
+        }
+    </script>
+
+</body>
+</html>
